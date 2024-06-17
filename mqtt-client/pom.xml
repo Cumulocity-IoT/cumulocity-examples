@@ -13,7 +13,7 @@
     <name>Cumulocity :: Examples :: Sample Mqtt Client</name>
 
     <properties>
-        <paho.version>1.2.0</paho.version>
+        <paho.version>1.2.1</paho.version>
     </properties>
 
     <dependencies>
