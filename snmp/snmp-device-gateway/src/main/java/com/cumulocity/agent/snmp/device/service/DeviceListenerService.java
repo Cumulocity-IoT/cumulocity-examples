@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 import org.snmp4j.MessageDispatcher;
 import org.snmp4j.MessageDispatcherImpl;

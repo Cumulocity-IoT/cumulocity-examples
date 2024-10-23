@@ -23,8 +23,8 @@ import com.cumulocity.microservice.lpwan.codec.model.DeviceCommand;
 import com.cumulocity.microservice.lpwan.codec.model.DeviceInfo;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;

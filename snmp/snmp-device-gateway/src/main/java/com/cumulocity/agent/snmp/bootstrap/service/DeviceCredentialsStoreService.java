@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

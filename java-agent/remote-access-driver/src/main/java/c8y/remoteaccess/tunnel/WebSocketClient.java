@@ -4,11 +4,11 @@ import c8y.remoteaccess.util.CumulocityIOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.Session;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.Session;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;

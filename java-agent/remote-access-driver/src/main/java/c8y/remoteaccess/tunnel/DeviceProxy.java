@@ -9,9 +9,9 @@ import com.cumulocity.sdk.client.PlatformParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;

@@ -25,11 +25,11 @@ import com.cumulocity.agent.snmp.platform.service.GatewayDataProvider;
 import com.cumulocity.agent.snmp.platform.service.PlatformProvider;
 import com.cumulocity.sdk.client.SDKException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.util.Collection;
 
 /**
