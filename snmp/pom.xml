@@ -86,8 +86,8 @@
 				<version>${c8y.version}</version>
 				<exclusions>
 					<exclusion>
-						<groupId>javax.ws.rs</groupId>
-						<artifactId>javax.ws.rs-api</artifactId>
+						<groupId>jakarta.ws.rs</groupId>
+						<artifactId>jakarta.ws.rs-api</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

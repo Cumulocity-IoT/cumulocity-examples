@@ -20,14 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cumulocity.rest.representation.tenant.OptionRepresentation;
-import com.cumulocity.sdk.client.PlatformParameters;
-import com.cumulocity.sdk.client.ResponseParser;
-import com.cumulocity.sdk.client.RestConnector;
 import com.cumulocity.sdk.client.SDKException;
 
 import c8y.trackeragent.configuration.TrackerConfiguration;
-
-import javax.ws.rs.core.Response;
 
 @Component
 @TenantScope
