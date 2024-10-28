@@ -46,7 +46,7 @@
 		<cometd.version>3.0.10</cometd.version>
 		<svenson.version>1.5.8</svenson.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
-		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
+		<spring-boot-dependencies.version>3.3.3</spring-boot-dependencies.version>
 	</properties>
 
 	<dependencies>
@@ -96,6 +96,13 @@
 				<artifactId>device-capability-model</artifactId>
 				<version>${c8y.version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-properties-migrator</artifactId>
+				<version>3.3.5</version>
+			</dependency>
+
 
 			<!-- Cometd -->
 			<dependency>

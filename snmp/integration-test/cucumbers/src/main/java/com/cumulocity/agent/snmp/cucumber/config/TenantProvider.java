@@ -64,7 +64,7 @@ public class TenantProvider {
 		Platform managementPlatform = platformProvider.switchToManagement();
 		RestOperations rest = managementPlatform.rest();
 		log.info("Deleting cucumber tenant: " + testTenant.getId());
-		rest.delete("/tenant/tenants/" + testTenant.getId());
+		rest.delete("/tenant/tenants" + testTenant.getId());
 		log.info("Tenant deleted");
 	}
 

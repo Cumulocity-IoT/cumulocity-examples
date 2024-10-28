@@ -17,7 +17,6 @@
             <groupId>c8y.example</groupId>
             <artifactId>jv-driver</artifactId>
         </dependency>
-
         <dependency>
             <groupId>jakarta.websocket</groupId>
             <artifactId>jakarta.websocket-client-api</artifactId>

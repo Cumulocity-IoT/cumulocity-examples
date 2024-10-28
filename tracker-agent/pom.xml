@@ -23,7 +23,7 @@
     <description>Server-side agent for tracking device based on TCP</description>
 
     <properties>
-        <spring.boot.version>2.7.6</spring.boot.version>
+        <spring.boot.version>3.3.3</spring.boot.version>
         <package.name>tracker-agent-server</package.name>
         <package.directory>tracker-agent</package.directory>
         <agent.main.class>c8y.trackeragent.Main</agent.main.class>

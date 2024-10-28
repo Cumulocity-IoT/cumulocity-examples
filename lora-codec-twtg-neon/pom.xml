@@ -31,7 +31,7 @@
         <slf4j.version>1.7.32</slf4j.version>
         <graalvm.version>22.0.0</graalvm.version>
 
-        <spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>3.3.3</spring-boot-dependencies.version>
         <microservice.name>lora-codec-twtg-neon</microservice.name>
         <main.class>com.cumulocity.lora.codec.twtg.neon.Application</main.class>
     </properties>
@@ -52,6 +52,7 @@
             <artifactId>lpwan-custom-codec</artifactId>
             <version>${c8y.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.nsn.cumulocity.model</groupId>
             <artifactId>device-capability-model</artifactId>
