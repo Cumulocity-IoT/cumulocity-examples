@@ -2,8 +2,6 @@
 # Keep the directory order alphabetical and always list subdirectories after their parents
 # Keep in mind that cumulocity-examples is open source so everything in this file is public
 
-/* @martin-sag
-.*/** @martin-sag
 /device-integrations @l2p-
 /hello-world-microservice @mgrumann
 /hello-world-notification-microservice @Cumulocity-IoT/c8y-data-in-motion
