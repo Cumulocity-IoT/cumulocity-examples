@@ -10,8 +10,8 @@
     <version>${revision}${changelist}</version>
 
     <properties>
-        <revision>1018.0.493</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <revision>1018.0.494</revision>
+        <changelist></changelist>
         <c8y.version>${revision}${changelist}</c8y.version>
         <main.class>c8y.example.notification.helloworld.HelloWorldApplication</main.class>
 
