@@ -97,13 +97,6 @@
 				<version>${c8y.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-properties-migrator</artifactId>
-				<version>3.3.5</version>
-			</dependency>
-
-
 			<!-- Cometd -->
 			<dependency>
 				<groupId>org.cometd.java</groupId>

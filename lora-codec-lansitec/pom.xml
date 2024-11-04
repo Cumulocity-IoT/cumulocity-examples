@@ -54,12 +54,6 @@
 			<artifactId>device-capability-model</artifactId>
 			<version>${c8y.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>jakarta.annotation</groupId>
-			<artifactId>jakarta.annotation-api</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>

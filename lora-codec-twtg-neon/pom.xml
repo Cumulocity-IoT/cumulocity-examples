@@ -52,7 +52,6 @@
             <artifactId>lpwan-custom-codec</artifactId>
             <version>${c8y.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.nsn.cumulocity.model</groupId>
             <artifactId>device-capability-model</artifactId>
