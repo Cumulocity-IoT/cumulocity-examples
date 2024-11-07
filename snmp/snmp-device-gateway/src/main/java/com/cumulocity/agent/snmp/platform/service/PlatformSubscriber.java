@@ -18,7 +18,7 @@
 
 package com.cumulocity.agent.snmp.platform.service;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;

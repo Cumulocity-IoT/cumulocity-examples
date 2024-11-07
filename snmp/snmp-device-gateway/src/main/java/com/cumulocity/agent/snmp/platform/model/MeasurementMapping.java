@@ -26,7 +26,7 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import org.joda.time.DateTime;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
