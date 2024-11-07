@@ -27,7 +27,7 @@ import com.cumulocity.sdk.client.SDKException;
 
 import c8y.trackeragent.configuration.TrackerConfiguration;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 @Component
 @TenantScope

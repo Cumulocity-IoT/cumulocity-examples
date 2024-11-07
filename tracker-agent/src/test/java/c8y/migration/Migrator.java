@@ -12,7 +12,7 @@ package c8y.migration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import c8y.trackeragent.devicebootstrap.DeviceCredentials;
 import com.cumulocity.microservice.context.ContextService;

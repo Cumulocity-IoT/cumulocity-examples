@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import com.cumulocity.microservice.autoconfigure.MicroserviceApplication;
