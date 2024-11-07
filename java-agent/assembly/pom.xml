@@ -12,8 +12,8 @@
     <description>Base assembly package for all environments</description>
 
     <properties>
-        <revision>1020.141.0</revision>
-        <changelist></changelist>
+        <revision>1020.142.0</revision>
+        <changelist>-SNAPSHOT</changelist>
         <nexus.port>443</nexus.port>
     </properties>
 
