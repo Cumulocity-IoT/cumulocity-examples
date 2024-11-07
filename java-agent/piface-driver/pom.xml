@@ -32,7 +32,7 @@
         <dependency>
 			<groupId>com.pi4j</groupId>
 			<artifactId>pi4j-example</artifactId>
-			<version>1.2</version>
+			<version>${pl4j-example.version}</version>
 		</dependency>
 	</dependencies>
 

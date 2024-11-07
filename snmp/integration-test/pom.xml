@@ -36,6 +36,9 @@
 
     <properties>
         <skip.tests>true</skip.tests>
+
+        <snmp4j.version>2.8.0</snmp4j.version>
+        <snmp4j-agent.version>2.7.1</snmp4j-agent.version>
     </properties>
 
     <profiles>

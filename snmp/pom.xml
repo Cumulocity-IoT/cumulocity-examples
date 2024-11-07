@@ -42,11 +42,12 @@
 
 	<properties>
 		<argLine>-Duser.language=en</argLine>
-		<snmp4j.version>2.8.0</snmp4j.version>
+		<chronicle-bom.version>2.22.132</chronicle-bom.version>
 		<cometd.version>3.0.10</cometd.version>
-		<svenson.version>1.5.8</svenson.version>
 		<jetty.version>9.4.43.v20210629</jetty.version>
+		<snmp4j.version>2.8.0</snmp4j.version>
 		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
+		<svenson.version>1.5.8</svenson.version>
 	</properties>
 
 	<dependencies>
@@ -141,7 +142,7 @@
 				<artifactId>chronicle-bom</artifactId>
 				<type>pom</type>
 				<scope>import</scope>
-				<version>2.22.132</version>
+				<version>${chronicle-bom.version}</version>
 			</dependency>
 
 			<!--SNMP4J -->

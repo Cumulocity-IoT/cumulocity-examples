@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.easytesting</groupId>
             <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
+            <version>${fest-assert.version}</version>
             <scope>test</scope>
         </dependency>		
 	</dependencies>

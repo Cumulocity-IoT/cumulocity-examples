@@ -28,12 +28,15 @@
     <name>lora-codec-twtg-neon</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <slf4j.version>1.7.32</slf4j.version>
-        <graalvm.version>22.0.0</graalvm.version>
-
-        <spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
         <microservice.name>lora-codec-twtg-neon</microservice.name>
         <main.class>com.cumulocity.lora.codec.twtg.neon.Application</main.class>
+
+        <commons-pool2.version>2.6.0</commons-pool2.version>
+        <graalvm.version>22.0.0</graalvm.version>
+        <junit-jupiter-api.version>5.8.2</junit-jupiter-api.version>
+        <mockito-inline.version>2.13.0</mockito-inline.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -74,7 +77,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-            <version>2.6.0</version>
+            <version>${commons-pool2.version}</version>
         </dependency>
 
         <dependency>
@@ -85,7 +88,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.2</version>
+            <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -96,7 +99,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>2.13.0</version>
+            <version>${mockito-inline.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

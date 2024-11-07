@@ -14,9 +14,14 @@
 
     <properties>
         <commons.io.version>2.4</commons.io.version>
+        <fest-assert.version>1.4</fest-assert.version>
+        <guava.version>29.0-jre</guava.version>
+        <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jssc.version>2.6.0</jssc.version>
         <logback.version>1.0.13</logback.version>
+        <pl4j-example.version>1.2</pl4j-example.version>
         <tinkerforge.version>2.1.17</tinkerforge.version>
+        <tyrus-container-grizzly-client.version>1.8.2</tyrus-container-grizzly-client.version>
     </properties>
 
 	<modules>

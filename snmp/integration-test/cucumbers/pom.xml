@@ -34,6 +34,7 @@
 
     <properties>
         <cucumber.version>4.2.0</cucumber.version>
+        <lombok.version>1.18.22</lombok.version>
     </properties>
 
     <dependencies>
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
