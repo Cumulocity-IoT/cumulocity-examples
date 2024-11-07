@@ -69,7 +69,6 @@
         <dependency>
             <groupId>com.nsn.cumulocity.model</groupId>
             <artifactId>device-capability-model</artifactId>
-            <version>${c8y.version}</version>
         </dependency>
         <dependency>
             <groupId>com.nsn.cumulocity.clients-java</groupId>
