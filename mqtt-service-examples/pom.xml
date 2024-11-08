@@ -25,6 +25,10 @@
         <java.version>17</java.version>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <awaitility.version>4.2.0</awaitility.version>
+        <lombok.version>1.18.26</lombok.version>
+        <spring-retry.version>1.3.4</spring-retry.version>
     </properties>
 
     <licenses>
