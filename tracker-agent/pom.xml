@@ -26,7 +26,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <jsr305.version>3.0.2</jsr305.version>
         <guava.version>29.0-jre</guava.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <spring.boot.version>2.7.6</spring.boot.version>
         <package.name>tracker-agent-server</package.name>
         <package.directory>tracker-agent</package.directory>

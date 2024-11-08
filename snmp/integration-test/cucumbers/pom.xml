@@ -34,7 +34,7 @@
 
     <properties>
         <cucumber.version>4.2.0</cucumber.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
     </properties>
 
     <dependencies>
