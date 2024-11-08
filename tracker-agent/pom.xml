@@ -23,10 +23,15 @@
     <description>Server-side agent for tracking device based on TCP</description>
 
     <properties>
-        <spring.boot.version>2.7.6</spring.boot.version>
         <package.name>tracker-agent-server</package.name>
         <package.directory>tracker-agent</package.directory>
         <agent.main.class>c8y.trackeragent.Main</agent.main.class>
+
+        <commons-lang3.version>3.11</commons-lang3.version>
+        <guava.version>29.0-jre</guava.version>
+        <jsr305-api.version>3.0.2</jsr305-api.version>
+        <lombok.version>1.18.22</lombok.version>
+        <spring.boot.version>2.7.6</spring.boot.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -79,23 +84,23 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
+            <version>${jsr305-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 

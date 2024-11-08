@@ -32,12 +32,6 @@
     <description>Microservice for MIB File Parsing</description>
     <artifactId>snmp-mib-parser</artifactId>
 
-    <properties>
-        <jackson.version>2.13.3</jackson.version>
-        <mibble.version>2.10.1</mibble.version>
-        <mibble.grammatica.version>1.6</mibble.grammatica.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.nsn.cumulocity.clients-java</groupId>
@@ -47,9 +41,9 @@
         <dependency>
             <groupId>net.percederberg.grammatica</groupId>
             <artifactId>grammatica</artifactId>
-            <version>${mibble.grammatica.version}</version>
+            <version>${mibble-grammatica.version}</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/lib/grammatica-${mibble.grammatica.version}.jar</systemPath>
+            <systemPath>${pom.basedir}/src/main/resources/lib/grammatica-${mibble-grammatica.version}.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -100,7 +94,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot-dependencies.version}</version>
+                <version>${spring-boot.version}</version>
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.cumulocity.mibparser.MibParserApplication</mainClass>

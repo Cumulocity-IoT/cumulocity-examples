@@ -32,10 +32,6 @@
 
     <artifactId>snmp-cucumbers</artifactId>
 
-    <properties>
-        <cucumber.version>4.2.0</cucumber.version>
-    </properties>
-
     <dependencies>
         <!-- Spring libraries -->
         <dependency>
@@ -82,7 +78,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>

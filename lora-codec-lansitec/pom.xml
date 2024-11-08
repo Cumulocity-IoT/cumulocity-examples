@@ -27,11 +27,14 @@
 	<artifactId>lora-codec-lansitec</artifactId>
 	<name>lora-codec-lansitec</name>
 	<url>http://maven.apache.org</url>
+
 	<properties>
-		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
 		<microservice.name>lora-codec-lansitec</microservice.name>
 		<main.class>lora.Application</main.class>
+
+		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
