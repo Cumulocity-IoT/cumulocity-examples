@@ -32,7 +32,7 @@
 		<microservice.name>lora-codec-lansitec</microservice.name>
 		<main.class>lora.Application</main.class>
 
-		<spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
+		<spring-boot.version>2.7.18</spring-boot.version>
 	</properties>
 
 	<dependencyManagement>
@@ -63,7 +63,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot-dependencies.version}</version>
+				<version>${spring-boot.version}</version>
 				<configuration>
 					<mainClass>${main.class}</mainClass>
 				</configuration>

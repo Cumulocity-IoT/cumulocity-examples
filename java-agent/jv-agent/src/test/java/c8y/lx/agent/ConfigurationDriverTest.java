@@ -20,13 +20,16 @@
 
 package c8y.lx.agent;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.Properties;
 
+import org.hamcrest.core.StringContains;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +42,6 @@ import com.cumulocity.rest.representation.operation.OperationRepresentation;
 import com.cumulocity.sdk.client.Platform;
 import com.cumulocity.sdk.client.inventory.InventoryApi;
 import com.cumulocity.sdk.client.inventory.ManagedObject;
-import org.mockito.internal.matchers.Contains;
 
 public class ConfigurationDriverTest {
 
@@ -76,8 +78,8 @@ public class ConfigurationDriverTest {
 		String string = PropUtils.toString(referenceProps);
 		string = string.substring(string.indexOf("\n") + 1);
 		string = string.replace("\r", "");
-		assertThat(string, new Contains("propA=valueA"));
-		assertThat(string, new Contains("propB=valueB"));
+		assertThat(string, new StringContains("propA=valueA"));
+		assertThat(string, new StringContains("propB=valueB"));
 	}
 
 	@Test

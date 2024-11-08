@@ -18,7 +18,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <kotlin.version>1.6.0</kotlin.version>
+        <kotlin.version>1.6.21</kotlin.version>
         <springmockk.version>2.0.3</springmockk.version>
     </properties>
 
