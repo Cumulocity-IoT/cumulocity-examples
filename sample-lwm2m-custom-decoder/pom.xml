@@ -15,7 +15,7 @@
     <properties>
         <main.class>c8y.example.bytesequencedecoder.ByteSequenceDecoder</main.class>
 
-        <spring-boot.version>2.7.18</spring-boot.version>
+        <spring-boot.version>3.0.13</spring-boot.version>
     </properties>
 
     <dependencyManagement>

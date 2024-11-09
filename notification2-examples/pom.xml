@@ -29,9 +29,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <lombok.version>1.18.30</lombok.version>
-        <websocket-java.version>1.5.1</websocket-java.version>
+        <websocket-java.version>1.5.3</websocket-java.version>
         <commons-configuration.version>2.10.1</commons-configuration.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.9</slf4j.version>
     </properties>
 
     <licenses>
