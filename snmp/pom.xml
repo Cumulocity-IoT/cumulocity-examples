@@ -54,7 +54,7 @@
 		<mockito.version>4.5.1</mockito.version>
 		<snmp4j-agent.version>2.7.1</snmp4j-agent.version>
 		<snmp4j.version>2.8.0</snmp4j.version>
-		<spring-boot.version>2.7.18</spring-boot.version>
+		<spring-boot.version>3.0.13</spring-boot.version>
 		<svenson.version>1.5.8</svenson.version>
 	</properties>
 
@@ -93,12 +93,6 @@
 				<groupId>com.nsn.cumulocity.clients-java</groupId>
 				<artifactId>java-client</artifactId>
 				<version>${c8y.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.ws.rs</groupId>
-						<artifactId>javax.ws.rs-api</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.nsn.cumulocity.model</groupId>
