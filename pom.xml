@@ -106,8 +106,46 @@
   </dependencyManagement>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <requireMavenVersion>
+              <version>3.9</version>
+            </requireMavenVersion>
+            <requireJavaVersion>
+              <version>${java.version}</version>
+            </requireJavaVersion>
+            <dependencyConvergence />
+            <bannedDependencies>
+              <excludes><exclude>commons-logging:commons-logging</exclude></excludes>
+              <message>Dependency to commons-logging:commons-logging was replaced by org.slf4j:jcl-over-slf4j</message>
+            </bannedDependencies>
+            <bannedDependencies>
+              <excludes><exclude>org.bouncycastle:*-jdk15on</exclude></excludes>
+              <message>Dependency to org.bouncycastle:*-jdk15on was replaced by org.bouncycastle:*-jdk18on</message>
+            </bannedDependencies>
+          </rules>
+        </configuration>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.5.0</version>
+          <executions>
+            <execution>
+              <id>enforce-rules</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>

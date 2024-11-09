@@ -98,6 +98,13 @@
 	<dependencyManagement>
 		<dependencies>
             <dependency>
+                <groupId>com.nsn.cumulocity.clients-java</groupId>
+                <artifactId>clients-java</artifactId>
+                <version>${c8y.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>c8y.example</groupId>
                 <artifactId>jv-driver</artifactId>
                 <version>${project.version}</version>
