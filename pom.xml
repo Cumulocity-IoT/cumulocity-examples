@@ -11,8 +11,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>1020.146.0</revision>
-    <changelist></changelist>
+    <revision>1020.147.0</revision>
+    <changelist>-SNAPSHOT</changelist>
     <c8y.version>${project.version}</c8y.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
