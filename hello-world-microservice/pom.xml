@@ -12,14 +12,14 @@
     <properties>
         <revision>1020.151.0</revision>
         <changelist>-SNAPSHOT</changelist>
-        <c8y.version>${revision}${changelist}</c8y.version>
-        <main.class>c8y.example.helloworld.HelloWorldMain</main.class>
 
         <java.version>17</java.version>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <microservice.java.version>${java.version}</microservice.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.class>c8y.example.helloworld.HelloWorldMain</main.class>
 
-        <spring-boot.version>3.0.13</spring-boot.version>
+        <c8y.version>${revision}${changelist}</c8y.version>
+        <spring-boot.version>3.1.12</spring-boot.version>
     </properties>
 
     <dependencyManagement>

@@ -13,12 +13,14 @@
   <properties>
     <revision>1020.151.0</revision>
     <changelist>-SNAPSHOT</changelist>
-    <c8y.version>${project.version}</c8y.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <microservice.java.version>${java.version}</microservice.java.version>
     <nexus.url>http://localhost:8080</nexus.url>
     <nexus.basePath>/nexus/content/repositories</nexus.basePath>
+
+    <c8y.version>${project.version}</c8y.version>
   </properties>
 
   <profiles>
@@ -177,10 +179,11 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
+            <parameters>true</parameters>
           </configuration>
         </plugin>
         <plugin>

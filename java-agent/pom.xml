@@ -13,15 +13,9 @@
 	<packaging>pom</packaging>
 
     <properties>
-        <assertj.version>3.23.1</assertj.version>
-        <commons-io.version>2.14.0</commons-io.version>
         <fest-assert.version>1.4</fest-assert.version>
-        <guava.version>32.0.1-jre</guava.version>
-        <hamcrest.version>2.2</hamcrest.version>
         <jssc.version>2.6.0</jssc.version>
-        <junit.version>5.8.2</junit.version>
         <logback.version>1.4.11</logback.version>
-        <mockito.version>4.8.1</mockito.version>
         <pi4j.version>1.2</pi4j.version>
         <tinkerforge.version>2.1.17</tinkerforge.version>
         <tyrus.version>1.8.2</tyrus.version>
@@ -72,25 +66,21 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>
@@ -148,13 +138,6 @@
                 <version>${project.version}</version>
                 <type>tar.gz</type>
                 <classifier>mac</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -21,13 +21,6 @@
     </modules>
 
     <properties>
-        <c8y.version>${revision}${changelist}</c8y.version>
-        <java.version>17</java.version>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <awaitility.version>4.2.0</awaitility.version>
-        <lombok.version>1.18.30</lombok.version>
         <spring-retry.version>2.0.4</spring-retry.version>
     </properties>
 
