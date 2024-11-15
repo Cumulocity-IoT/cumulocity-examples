@@ -15,15 +15,18 @@
     <description>Cumulocity Sample Kotlin Microservice</description>
 
     <properties>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <kotlin.version>1.7.22</kotlin.version>
+        <jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
+        <kotlin.version>1.8.22</kotlin.version>
         <springmockk.version>4.0.2</springmockk.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${jetbrains-annotations.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-bom</artifactId>
@@ -103,7 +106,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.0.13</version>
+                <version>3.1.12</version>
                 <executions>
                     <execution>
                         <goals>

@@ -13,9 +13,6 @@
     <name>Cumulocity :: Examples :: Notification 2.0 Examples :: Hello World Notifications 2.0 Microservice</name>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>c8y.example.notification.microservice.HelloWorldApplication</main.class>
     </properties>
 

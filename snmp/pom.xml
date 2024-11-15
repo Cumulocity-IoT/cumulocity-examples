@@ -46,15 +46,12 @@
 		<chronicle.version>2.22.132</chronicle.version>
 		<cometd.version>3.0.10</cometd.version>
 		<cucumber.version>4.2.0</cucumber.version>
-		<jackson.version>2.13.5</jackson.version>
-		<jetty.version>9.4.53.v20231009</jetty.version>
-		<lombok.version>1.18.30</lombok.version>
 		<mibble-grammatica.version>1.6</mibble-grammatica.version>
 		<mibble.version>2.10.1</mibble.version>
 		<mockito.version>4.5.1</mockito.version>
 		<snmp4j-agent.version>2.7.1</snmp4j-agent.version>
 		<snmp4j.version>2.8.0</snmp4j.version>
-		<spring-boot.version>3.0.13</spring-boot.version>
+		<spring-boot.version>3.1.12</spring-boot.version>
 		<svenson.version>1.5.8</svenson.version>
 	</properties>
 
@@ -124,18 +121,6 @@
 				<groupId>org.cometd.java</groupId>
 				<artifactId>cometd-java-common</artifactId>
 				<version>${cometd.version}</version>
-			</dependency>
-
-			<!-- Jetty -->
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-continuation</artifactId>
-				<version>${jetty.version}</version>
 			</dependency>
 
 			<!-- Chronicle -->
