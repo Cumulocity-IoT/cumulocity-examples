@@ -26,8 +26,6 @@
         <package.name>tracker-agent-server</package.name>
         <package.directory>tracker-agent</package.directory>
         <agent.main.class>c8y.trackeragent.Main</agent.main.class>
-
-        <spring-boot.version>3.1.12</spring-boot.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -106,7 +104,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

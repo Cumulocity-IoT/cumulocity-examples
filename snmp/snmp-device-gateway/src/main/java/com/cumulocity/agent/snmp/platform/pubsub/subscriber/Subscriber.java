@@ -43,15 +43,15 @@ import java.util.Collection;
 @Slf4j
 public abstract class Subscriber<PS extends PubSub<?>> {
 
-    @Autowired
-    private GatewayDataProvider gatewayDataProvider;
+    private final GatewayDataProvider gatewayDataProvider;
+    private final PlatformProvider platformProvider;
+    private final PS pubSub;
 
-    @Autowired
-    private PlatformProvider platformProvider;
-
-    @Autowired
-    private PS pubSub;
-
+    public Subscriber(GatewayDataProvider gatewayDataProvider, PlatformProvider platformProvider, PS pubSub) {
+        this.gatewayDataProvider = gatewayDataProvider;
+        this.platformProvider = platformProvider;
+        this.pubSub = pubSub;
+    }
 
     private long transmitRateInSeconds = -1;
 

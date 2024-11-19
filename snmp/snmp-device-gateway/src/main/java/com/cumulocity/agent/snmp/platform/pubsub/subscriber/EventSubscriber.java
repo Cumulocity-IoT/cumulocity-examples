@@ -20,6 +20,8 @@ package com.cumulocity.agent.snmp.platform.pubsub.subscriber;
 
 import com.cumulocity.agent.snmp.config.GatewayProperties;
 import com.cumulocity.agent.snmp.platform.pubsub.service.EventPubSub;
+import com.cumulocity.agent.snmp.platform.service.GatewayDataProvider;
+import com.cumulocity.agent.snmp.platform.service.PlatformProvider;
 import com.cumulocity.sdk.client.event.EventApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,11 +29,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventSubscriber extends Subscriber<EventPubSub> {
 
-	@Autowired
-	private GatewayProperties gatewayProperties;
+	private final GatewayProperties gatewayProperties;
+	private final EventApi eventApi;
 
-	@Autowired
-	private EventApi eventApi;
+	public EventSubscriber(GatewayDataProvider gatewayDataProvider, PlatformProvider platformProvider,
+						   EventPubSub pubSub, GatewayProperties gatewayProperties, EventApi eventApi) {
+		super(gatewayDataProvider, platformProvider, pubSub);
+		this.gatewayProperties = gatewayProperties;
+		this.eventApi = eventApi;
+	}
 
 	@Override
 	public int getConcurrentSubscriptionsCount() {

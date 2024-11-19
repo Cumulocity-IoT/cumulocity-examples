@@ -16,7 +16,7 @@
 
     <properties>
         <jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
-        <kotlin.version>1.8.22</kotlin.version>
+        <kotlin.version>1.9.25</kotlin.version>
         <springmockk.version>4.0.2</springmockk.version>
     </properties>
 
@@ -106,7 +106,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.1.12</version>
                 <executions>
                     <execution>
                         <goals>

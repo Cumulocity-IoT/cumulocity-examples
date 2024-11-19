@@ -18,9 +18,14 @@
 
 package com.cumulocity.agent.snmp.platform.pubsub.service;
 
+import com.cumulocity.agent.snmp.config.GatewayProperties;
 import com.cumulocity.agent.snmp.platform.pubsub.queue.MeasurementQueue;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MeasurementPubSub extends PubSub<MeasurementQueue> {
+    public MeasurementPubSub(TaskScheduler taskScheduler, GatewayProperties gatewayProperties, MeasurementQueue queue) {
+        super(taskScheduler, gatewayProperties, queue);
+    }
 }

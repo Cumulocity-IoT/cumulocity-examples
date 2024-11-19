@@ -25,8 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Publisher<PS extends PubSub<?>, R extends BaseResourceRepresentation> {
 
-    @Autowired
-    private PS pubSub;
+    private final PS pubSub;
+
+    public Publisher(PS pubSub) {
+        this.pubSub = pubSub;
+    }
 
     public void publish(R resource) {
         pubSub.publish(resource.toJSON());

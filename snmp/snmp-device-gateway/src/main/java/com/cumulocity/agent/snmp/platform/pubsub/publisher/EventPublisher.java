@@ -24,4 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EventPublisher extends Publisher<EventPubSub, EventRepresentation> {
+    public EventPublisher(EventPubSub pubSub) {
+        super(pubSub);
+    }
 }

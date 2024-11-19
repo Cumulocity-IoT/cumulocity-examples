@@ -20,6 +20,8 @@ package com.cumulocity.agent.snmp.platform.pubsub.subscriber;
 
 import com.cumulocity.agent.snmp.config.GatewayProperties;
 import com.cumulocity.agent.snmp.platform.pubsub.service.AlarmPubSub;
+import com.cumulocity.agent.snmp.platform.service.GatewayDataProvider;
+import com.cumulocity.agent.snmp.platform.service.PlatformProvider;
 import com.cumulocity.sdk.client.alarm.AlarmApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,11 +29,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class AlarmSubscriber extends Subscriber<AlarmPubSub> {
 
-	@Autowired
-	private GatewayProperties gatewayProperties;
+	private final GatewayProperties gatewayProperties;
+	private final AlarmApi alarmApi;
 
-	@Autowired
-	private AlarmApi alarmApi;
+	public AlarmSubscriber(GatewayDataProvider gatewayDataProvider, PlatformProvider platformProvider,
+						   AlarmPubSub pubSub, GatewayProperties gatewayProperties, AlarmApi alarmApi) {
+		super(gatewayDataProvider, platformProvider, pubSub);
+		this.gatewayProperties = gatewayProperties;
+		this.alarmApi = alarmApi;
+	}
 
 	@Override
 	public int getConcurrentSubscriptionsCount() {

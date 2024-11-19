@@ -18,10 +18,15 @@
 
 package com.cumulocity.agent.snmp.platform.pubsub.service;
 
+import com.cumulocity.agent.snmp.config.GatewayProperties;
 import com.cumulocity.agent.snmp.platform.pubsub.queue.EventQueue;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EventPubSub extends PubSub<EventQueue> {
+    public EventPubSub(TaskScheduler taskScheduler, GatewayProperties gatewayProperties, EventQueue queue) {
+        super(taskScheduler, gatewayProperties, queue);
+    }
 }
 
