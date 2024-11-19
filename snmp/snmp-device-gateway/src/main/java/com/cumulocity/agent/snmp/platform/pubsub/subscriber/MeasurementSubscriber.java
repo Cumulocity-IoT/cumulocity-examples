@@ -20,6 +20,8 @@ package com.cumulocity.agent.snmp.platform.pubsub.subscriber;
 
 import com.cumulocity.agent.snmp.config.GatewayProperties;
 import com.cumulocity.agent.snmp.platform.pubsub.service.MeasurementPubSub;
+import com.cumulocity.agent.snmp.platform.service.GatewayDataProvider;
+import com.cumulocity.agent.snmp.platform.service.PlatformProvider;
 import com.cumulocity.sdk.client.measurement.MeasurementApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,11 +31,15 @@ import java.util.Collection;
 @Component
 public class MeasurementSubscriber extends Subscriber<MeasurementPubSub> {
 
-    @Autowired
-    private GatewayProperties gatewayProperties;
+    private final GatewayProperties gatewayProperties;
+    private final MeasurementApi measurementApi;
 
-    @Autowired
-    private MeasurementApi measurementApi;
+    public MeasurementSubscriber(GatewayDataProvider gatewayDataProvider, PlatformProvider platformProvider,
+                                 MeasurementPubSub pubSub, GatewayProperties gatewayProperties, MeasurementApi measurementApi) {
+        super(gatewayDataProvider, platformProvider, pubSub);
+        this.gatewayProperties = gatewayProperties;
+        this.measurementApi = measurementApi;
+    }
 
     @Override
     public boolean isBatchingSupported() {

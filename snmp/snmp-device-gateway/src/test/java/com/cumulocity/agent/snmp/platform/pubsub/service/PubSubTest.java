@@ -177,5 +177,8 @@ public class PubSubTest {
     }
 
     private static class PubSubImplForTest extends PubSub<Queue> {
+        public PubSubImplForTest(TaskScheduler taskScheduler, GatewayProperties gatewayProperties, Queue queue) {
+            super(taskScheduler, gatewayProperties, queue);
+        }
     }
 }

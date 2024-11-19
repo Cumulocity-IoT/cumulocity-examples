@@ -42,17 +42,16 @@ import java.util.concurrent.ScheduledFuture;
 @Slf4j
 public abstract class PubSub<Q extends Queue> {
 
-    @Autowired
-    private TaskScheduler taskScheduler;
-
-    @Autowired
-    private GatewayProperties gatewayProperties;
-
-    @Autowired
-    private Q queue;
-
+    private final TaskScheduler taskScheduler;
+    private final GatewayProperties gatewayProperties;
+    private final Q queue;
     private ScheduledFuture<?>[] subscriptions;
 
+    public PubSub(TaskScheduler taskScheduler, GatewayProperties gatewayProperties, Q queue) {
+        this.taskScheduler = taskScheduler;
+        this.gatewayProperties = gatewayProperties;
+        this.queue = queue;
+    }
 
     public void publish(String message) {
         if(message == null) {

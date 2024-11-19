@@ -24,4 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AlarmPublisher extends Publisher<AlarmPubSub, AlarmRepresentation> {
+    public AlarmPublisher(AlarmPubSub pubSub) {
+        super(pubSub);
+    }
 }

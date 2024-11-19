@@ -24,4 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MeasurementPublisher extends Publisher<MeasurementPubSub, MeasurementRepresentation> {
+    public MeasurementPublisher(MeasurementPubSub pubSub) {
+        super(pubSub);
+    }
 }

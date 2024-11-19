@@ -15,7 +15,7 @@
     <properties>
         <fest-assert.version>1.4</fest-assert.version>
         <jssc.version>2.6.0</jssc.version>
-        <logback.version>1.4.11</logback.version>
+        <logback.version>1.4.14</logback.version>
         <pi4j.version>1.2</pi4j.version>
         <tinkerforge.version>2.1.17</tinkerforge.version>
         <tyrus.version>1.8.2</tyrus.version>
