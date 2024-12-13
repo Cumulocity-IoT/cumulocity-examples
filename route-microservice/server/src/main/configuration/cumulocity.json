@@ -2,7 +2,7 @@
   "provider": {
     "name":"Cumulocity GmbH"
   },
-  "apiVersion": "1",
+  "apiVersion": "2",
   "version": "@project.version@",
   "isolation": "MULTI_TENANT",
   "requiredRoles": [
