@@ -13,7 +13,7 @@
 
     <properties>
         <revision>1018.540.263</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist></changelist>
         <nexus.port>443</nexus.port>
     </properties>
 
