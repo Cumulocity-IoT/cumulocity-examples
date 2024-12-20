@@ -12,7 +12,7 @@
     <description>Base assembly package for all environments</description>
 
     <properties>
-        <revision>1020.157.0</revision>
+        <revision>2025.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <nexus.port>443</nexus.port>
     </properties>
