@@ -12,8 +12,8 @@
     <description>Base assembly package for all environments</description>
 
     <properties>
-        <revision>2025.2.0</revision>
-        <changelist></changelist>
+        <revision>2025.2.1</revision>
+        <changelist>-SNAPSHOT</changelist>
         <nexus.port>443</nexus.port>
     </properties>
 
