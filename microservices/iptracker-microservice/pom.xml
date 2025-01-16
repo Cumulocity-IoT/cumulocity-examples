@@ -10,7 +10,7 @@
 
   <properties>
     <revision>2025.3.0</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <changelist></changelist>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
