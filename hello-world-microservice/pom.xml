@@ -10,8 +10,8 @@
     <version>${revision}${changelist}</version>
 
     <properties>
-        <revision>2025.0.2</revision>
-        <changelist></changelist>
+        <revision>2025.0.3</revision>
+        <changelist>-SNAPSHOT</changelist>
 
         <java.version>17</java.version>
         <microservice.java.version>${java.version}</microservice.java.version>
