@@ -11,8 +11,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2025.5.0</revision>
-    <changelist></changelist>
+    <revision>2025.6.0</revision>
+    <changelist>-SNAPSHOT</changelist>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
