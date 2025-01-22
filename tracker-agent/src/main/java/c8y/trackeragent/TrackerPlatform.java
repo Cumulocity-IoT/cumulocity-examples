@@ -17,6 +17,7 @@ import com.cumulocity.sdk.client.audit.AuditRecordApi;
 import com.cumulocity.sdk.client.devicecontrol.DeviceControlApi;
 import com.cumulocity.sdk.client.devicecontrol.DeviceCredentialsApi;
 import com.cumulocity.sdk.client.event.EventApi;
+import com.cumulocity.sdk.client.event.EventBinaryApi;
 import com.cumulocity.sdk.client.identity.IdentityApi;
 import com.cumulocity.sdk.client.inventory.BinariesApi;
 import com.cumulocity.sdk.client.inventory.InventoryApi;
@@ -127,6 +128,17 @@ public class TrackerPlatform implements Platform {
                 return orig.getBinariesApi();
             }
 
+        }.get();
+    }
+
+    @Override
+    public EventBinaryApi getEventBinaryApi() throws SDKException {
+        return new CachedApiGetter<EventBinaryApi>(EventBinaryApi.class) {
+
+            @Override
+            public EventBinaryApi call() throws Exception{
+                return orig.getEventBinaryApi();
+            }
         }.get();
     }
 
