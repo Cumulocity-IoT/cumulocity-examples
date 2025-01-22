@@ -1,4 +1,4 @@
-env.REPOSITORY_BASE_URL="github.com/SoftwareAG"
+env.REPOSITORY_BASE_URL="github.com/Cumulocity-IoT"
 
 pipeline {
      agent {
