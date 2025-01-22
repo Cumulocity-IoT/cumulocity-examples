@@ -56,7 +56,7 @@ Refer to the "**Building**" section of the [Readme][5] under the snmp folder.
 Once the deployment is complete, the MIB Parser microservice will be listed as an `Own application` under `Administration` tab. Now you should subscribe your tenant to this misroservice in order to use the service. More information on how to subscribe application for the given tenant using REST interface can be found at [Microservice SDK][4] section of the Cumulocity IoT user guide. Subscription can also be achieved using the user interface. `Administration` -> `Tenants` -> `Subtenants` -> `Select user` -> Click on `Application tab` -> Click `subscribe` on mouse hover `Mibparser` from the list of applications.
 For more details, refer to [Managing Applications][3] section of the Cumulocity IoT user guide.
 
-[1]: https://www.softwareag.cloud/site/product/cumulocity-iot.html#/
+[1]: https://www.cumulocity.com/
 [2]: https://cumulocity.com/guides/users-guide/optional-services/#snmp
 [3]: https://cumulocity.com/guides/users-guide/administration/#managing-applications
 [4]: https://cumulocity.com/guides/microservice-sdk/rest/
