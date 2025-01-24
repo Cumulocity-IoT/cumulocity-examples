@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jakarta.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.cumulocity.microservice.autoconfigure.MicroserviceApplication;
 import com.cumulocity.microservice.context.ContextService;
