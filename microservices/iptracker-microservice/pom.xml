@@ -10,7 +10,7 @@
 
   <properties>
     <revision>1018.540.273</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <changelist></changelist>
     <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
