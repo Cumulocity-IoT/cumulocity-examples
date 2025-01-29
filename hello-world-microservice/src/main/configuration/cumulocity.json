@@ -9,6 +9,28 @@
   ],
   "roles":[
   ],
+  "resources": {
+    "cpu": "1000m",
+    "memory": "1Gi"
+  },
+  "billing" : {
+    "metrics" : [
+      {
+        "name": "hwGaugeMetricStSt",
+        "type": "NUMBER",
+        "aggregation": {
+          "function": "LATEST"
+        }
+      },
+      {
+        "name": "hwSumMetricStSt",
+        "type": "NUMBER",
+        "aggregation": {
+          "function": "SUM"
+        }
+      }
+    ]
+  },
   "livenessProbe":{
     "httpGet":{
       "path": "/health",
