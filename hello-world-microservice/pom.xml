@@ -130,4 +130,17 @@
             <url>${nexus.url}/nexus/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>cumulocity</id>
+            <url>https://download.cumulocity.com/maven/repository</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>cumulocity</id>
+            <url>https://download.cumulocity.com/maven/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
