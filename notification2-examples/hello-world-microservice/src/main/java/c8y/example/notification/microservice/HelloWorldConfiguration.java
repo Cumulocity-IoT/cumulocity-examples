@@ -12,13 +12,11 @@ import org.springframework.context.annotation.Bean;
 public class HelloWorldConfiguration {
 
     @Bean
-    @Autowired
     public TokenService tokenService(TokenApi tokenApi) {
         return new TokenService(tokenApi);
     }
 
     @Bean
-    @Autowired
     public SubscriptionRepository subscriptionRepository(NotificationSubscriptionApi notificationSubscriptionApi) {
         return new SubscriptionRepository(notificationSubscriptionApi);
     }
