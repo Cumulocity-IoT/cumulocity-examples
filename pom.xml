@@ -64,6 +64,7 @@
     <module>snmp</module>
     <module>mqtt-client</module>
     <module>microservices</module>
+    <module>notification2-api-example</module>
   </modules>
 
   <licenses>

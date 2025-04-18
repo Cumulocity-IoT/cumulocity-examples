@@ -1,0 +1,33 @@
+{
+  "apiVersion": "2",
+  "version": "1.0",
+  "provider": {
+    "name": "Cumulocity GmbH"
+  },
+  "isolation": "MULTI_TENANT",
+  "requiredRoles": [
+    "ROLE_INVENTORY_READ",
+    "ROLE_NOTIFICATION_2_ADMIN"
+  ],
+  "roles": [
+  ],
+  "resources": {
+    "memory": "1G"
+  },
+  "livenessProbe": {
+    "httpGet": {
+      "path": "/health",
+      "port": 80
+    },
+    "initialDelaySeconds": 30,
+    "periodSeconds": 10
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "/health",
+      "port": 80
+    },
+    "initialDelaySeconds": 30,
+    "periodSeconds": 10
+  }
+}
