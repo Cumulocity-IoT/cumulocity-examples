@@ -6,7 +6,7 @@
     <parent>
         <groupId>c8y.example</groupId>
         <artifactId>c8y-examples</artifactId>
-        <version>2025.29.0-SNAPSHOT</version>
+        <version>${revision}${changelist}</version>
     </parent>
 
     <groupId>c8y.agents</groupId>
@@ -51,7 +51,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.cumulocity.examples.notifications2.Main</mainClass>
+                    <mainClass>com.cumulocity.examples.com.cumulocity.examples.notifications2.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>

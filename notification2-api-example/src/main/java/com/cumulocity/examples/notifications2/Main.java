@@ -1,4 +1,4 @@
-package notifications2;
+package com.cumulocity.examples.notifications2;
 
 import com.cumulocity.microservice.autoconfigure.MicroserviceApplication;
 import org.springframework.boot.SpringApplication;

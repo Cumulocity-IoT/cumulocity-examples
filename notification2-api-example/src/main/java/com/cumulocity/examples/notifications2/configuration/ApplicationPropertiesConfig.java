@@ -1,4 +1,4 @@
-package notifications2.configuration;
+package com.cumulocity.examples.notifications2.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
