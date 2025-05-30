@@ -24,6 +24,7 @@ import com.cumulocity.sdk.client.inventory.InventoryApi;
 import com.cumulocity.sdk.client.measurement.MeasurementApi;
 import com.cumulocity.sdk.client.messaging.notifications.NotificationSubscriptionApi;
 import com.cumulocity.sdk.client.messaging.notifications.TokenApi;
+import com.cumulocity.sdk.client.notification2.Notifications2Api;
 import com.cumulocity.sdk.client.option.SystemOptionApi;
 import com.cumulocity.sdk.client.option.TenantOptionApi;
 import com.cumulocity.sdk.client.user.UserApi;
@@ -205,6 +206,17 @@ public class TrackerPlatform implements Platform {
             @Override
             public NotificationSubscriptionApi call() throws Exception {
                 return orig.getNotificationSubscriptionApi();
+            }
+        }.get();
+    }
+
+    @Override
+    public Notifications2Api getNotifications2Api() throws SDKException {
+        return new CachedApiGetter<Notifications2Api>(Notifications2Api.class) {
+
+            @Override
+            public Notifications2Api call() throws Exception {
+                return orig.getNotifications2Api();
             }
         }.get();
     }

@@ -24,7 +24,7 @@
 
     <properties>
         <commons-configuration.version>2.10.1</commons-configuration.version>
-        <websocket-java.version>1.5.3</websocket-java.version>
+        <websocket-java.version>1.6.0</websocket-java.version>
     </properties>
 
     <licenses>
