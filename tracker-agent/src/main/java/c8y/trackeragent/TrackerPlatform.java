@@ -212,8 +212,7 @@ public class TrackerPlatform implements Platform {
 
     @Override
     public Notifications2Api getNotifications2Api() throws SDKException {
-        return new CachedApiGetter<Notifications2Api>(Notifications2Api.class) {
-
+        return new CachedApiGetter<>(Notifications2Api.class) {
             @Override
             public Notifications2Api call() throws Exception {
                 return orig.getNotifications2Api();

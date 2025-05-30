@@ -10,7 +10,7 @@
     <version>${revision}${changelist}</version>
 
     <properties>
-        <revision>2025.43.0</revision>
+        <revision>2025.44.0</revision>
         <changelist>-SNAPSHOT</changelist>
 
         <java.version>17</java.version>

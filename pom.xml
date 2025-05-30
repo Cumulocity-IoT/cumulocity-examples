@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2025.43.0</revision>
+    <revision>2025.44.0</revision>
     <changelist>-SNAPSHOT</changelist>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,6 +64,7 @@
     <module>snmp</module>
     <module>mqtt-client</module>
     <module>microservices</module>
+    <module>notification2-api-example</module>
   </modules>
 
   <licenses>
