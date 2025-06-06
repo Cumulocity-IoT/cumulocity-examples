@@ -1,7 +1,7 @@
 {
   "apiVersion": "2",
   "version": "1.0",
-  "name": "n2t",
+  "name": "notifications2-example",
   "scale": "AUTO",
   "replicas": 1,
   "provider": {
