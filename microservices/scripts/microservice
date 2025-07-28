@@ -30,7 +30,7 @@ execute () {
 		echo "[INFO] No goal set. Please set pack, deploy or subscribe"
 	fi
 	if [ "$PACK" == "0" ]
-	then 
+	then
 		echo "[INFO] Start packaging"
 		verifyPackPrerequisits
 		clearTarget
@@ -63,7 +63,7 @@ readInput () {
 		pack)
 		PACK=0
 		shift
-		;;	
+		;;
 		deploy)
 		DEPLOY=0
 		shift
@@ -132,9 +132,9 @@ readInput () {
 setDefaults () {
 	ZIP_NAME="$IMAGE_NAME.zip"
 	if [ "x$APPLICATION_NAME" == "x" ]
-	then 
+	then
 		APPLICATION_NAME=$IMAGE_NAME
-	fi	
+	fi
 }
 
 printHelp () {
@@ -147,12 +147,12 @@ printHelp () {
 	echo "	deploy - deploys application to specified address"
 	echo "	subscribe - subscribes tenant to specified microservice application"
 	echo "	help | --help - prints help"
-	echo 
+	echo
 	echo "Following options are available:"
 	echo "	-dir | --directory 		# Working directory. Default value'$(pwd)' "
 	echo "	-n   | --name 	 		# Docker image name"
 	echo "	-t   | --tag			# Docker tag. Default value 'latest'"
-	echo "	-d   | --deploy			# Address of the platform the microservice will be uploaded to"	
+	echo "	-d   | --deploy			# Address of the platform the microservice will be uploaded to"
 	echo "	-u   | --user			# Username used for authentication to the platform"
 	echo "	-p   | --password 		# Password used for authentication to the platform"
 	echo "	-te  | --tenant			# Tenant used"
@@ -164,9 +164,9 @@ verifyPackPrerequisits () {
 	echo "[INFO] Check input"
 	result=0
 	verifyParamSet "$IMAGE_NAME" "name"
-	isPresent $(find -maxdepth 1 -name "docker" | wc -l) "[ERROR] Stopped: missing docker directory in work directory: $WORK_DIR"
-	isPresent $(find docker -maxdepth 1 -name "Dockerfile" | wc -l) "[ERROR] Stopped: missing dockerfile in work directory: $WORK_DIR"
-	isPresent $(find -maxdepth 1 -name "cumulocity.json" | wc -l) "[ERROR] Stopped: missing cumulocity.json in work directory: $WORK_DIR"
+	isPresent $(find . -maxdepth 1 -name "docker" | wc -l) "[ERROR] Stopped: missing docker directory in work directory: $WORK_DIR"
+	isPresent $(find . docker -maxdepth 1 -name "Dockerfile" | wc -l) "[ERROR] Stopped: missing dockerfile in work directory: $WORK_DIR"
+	isPresent $(find . -maxdepth 1 -name "cumulocity.json" | wc -l) "[ERROR] Stopped: missing cumulocity.json in work directory: $WORK_DIR"
 
 	if [ "$result" == "1" ]
 	then
