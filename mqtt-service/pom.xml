@@ -13,6 +13,7 @@
     <groupId>c8y.example.mqtt-service</groupId>
     <artifactId>mqtt-service-examples</artifactId>
     <version>${revision}${changelist}</version>
+    <name>Cumulocity :: Examples :: MQTT Service</name>
     <packaging>pom</packaging>
 
     <modules>

@@ -12,6 +12,7 @@
 
     <artifactId>simple-pulsar-client</artifactId>
     <version>${revision}${changelist}</version>
+    <name>Cumulocity :: Examples :: MQTT Service :: Simple Pulsar Client</name>
 
     <licenses>
         <license>
