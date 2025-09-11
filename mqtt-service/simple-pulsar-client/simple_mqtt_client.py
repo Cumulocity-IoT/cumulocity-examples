@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import paho.mqtt.client as mqtt
 
 import getpass
@@ -14,7 +16,7 @@ def on_message(client, userdata, msg):
 
 # Validate command line
 if len(sys.argv) < 4:
-   print('Usage: python ./mqtt_service_mqtt_client.py <server> <tenant> <username>')
+   print('Usage: ./mqtt_service_mqtt_client.py <server> <tenant> <username>')
    print('The password for the tenant user will be read from the console')
    sys.exit(-1)
 
