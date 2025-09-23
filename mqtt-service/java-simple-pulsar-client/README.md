@@ -1,6 +1,7 @@
-# Simple Java Pulsar client example
+# Simple MQTT Service Java client example
 
-TBC Introduction TBC
+A simple Pulsar client for the Cumulocity MQTT Service written in Java.
+This is the runnable version of the example client described in the [user documentation](https://cumulocity.com/docs/device-integration/mqtt-service/#pulsar-client) for the MQTT Service. You should read that documentation before trying to run this example, to ensure that your tenant and user are correctly configured to use the MQTT Service.
 
 ## Pre-requisites
 
@@ -24,4 +25,19 @@ Where:
 * `<TENANT>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
 * `<USER>` is a username in your tenant that is authorized to connect to the MQTT Service.
 
-TBC Expected output TBC
+The client will pause for 60 seconds after publishing some messages, to allow time for MQTT devices to publish messages that will be consumed by the client.
+The output should look similar to this, depending on which messages were published by devices while the demo client was running:
+```
+Password for user t123456789/username: 
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+Created Pulsar client
+Created Pulsar consumer
+Created Pulsar producer
+Sent message to single device
+Sent message to all subscribed devices
+Received message from MQTT device demoClient on MQTT topic demoTopicB
+Message payload: Message from MQTT client
+Message properties: {clientID=demoClient, topic=demoTopicB}
+```
