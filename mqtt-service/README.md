@@ -1,6 +1,6 @@
 # Cumulocity MQTT Service examples
 
-This folder contains example microservices and standalone clients for for Cumulocity MQTT Service.
+This folder contains example microservices and standalone clients for the Cumulocity MQTT Service.
 See the [user guide](https://cumulocity.com/docs/device-integration/mqtt-service/) for more information on this component of the Cumulocity platform.
 
 Each example is in its own subfolder with a separate README file explaining how to build and run the example:
