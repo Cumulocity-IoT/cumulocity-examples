@@ -1,4 +1,4 @@
-# Simple Pulsar client example
+# Simple Java Pulsar client example
 
 TBC Introduction TBC
 
@@ -12,10 +12,10 @@ TBC Introduction TBC
 
 ```shell
 git clone git@github.com:Cumulocity-IoT/cumulocity-examples.git
-cd mqtt-service/simple-pulsar-client
+cd mqtt-service/java-simple-pulsar-client
 mvn clean package
 export C8Y_BASEURL_PULSAR=pulsar+ssl://<DOMAIN>:6651
-java -jar target/simple-pulsar-client-<VERSION>-jar-with-dependencies.jar <TENANT> <USER>
+java -jar target/java-simple-pulsar-client-<VERSION>-jar-with-dependencies.jar <TENANT> <USER>
 ```
 
 Where:
@@ -24,4 +24,4 @@ Where:
 * `<TENANT>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
 * `<USER>` is a username in your tenant that is authorized to connect to the MQTT Service.
 
-TBC Expected output and the Python device simulator TBC
+TBC Expected output TBC

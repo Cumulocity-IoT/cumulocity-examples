@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>simple-pulsar-client</module>
+        <module>java-simple-pulsar-client</module>
     </modules>
 
     <build>
