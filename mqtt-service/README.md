@@ -5,8 +5,8 @@ See the [user guide](https://cumulocity.com/docs/device-integration/mqtt-service
 
 Each example is in its own subfolder with a separate README file explaining how to build and run the example:
 
-* [simple-pulsar-client](simple-pulsar-client/): A basic standalone client application showing how to use the Pulsar API to exchange messages with MQTT devices.
-A simple Python script to simulate an MQTT device is also provided.
+* [java-simple-pulsar-client](java-simple-pulsar-client/): A basic standalone Java client application showing how to use the Pulsar API to exchange messages with MQTT devices.
+* [python-simple-mqtt-client](python-simple-mqtt-client/): A simple Python MQTT client that can be used to simulate an MQTT device.
 
 ## Pre-requisites
 
@@ -21,3 +21,4 @@ mvn clean package
 
 Python scripts will generally require Python version 3.12+ to run them.
 Some Python scripts will use the [paho-mqtt](https://pypi.org/project/paho-mqtt/) library and other third-party packages, which will need to be installed in your Python (virtual) environment.
+A `Pipfile` for [pipenv](https://pipenv.pypa.io/en/latest/) will be provided with those examples, to create a Python virtual environment with all the required dependencies installed automatically.
