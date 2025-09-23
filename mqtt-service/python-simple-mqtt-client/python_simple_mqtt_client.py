@@ -16,16 +16,15 @@ def on_message(client, userdata, msg):
 
 # Validate command line
 if len(sys.argv) < 4:
-   print('Usage: ./python_simple_mqtt_client.py <server> <tenant> <username>')
+   print('Usage: ./python_simple_mqtt_client.py <domain> <tenant> <username>')
    print('The password for the tenant user will be read from the console')
    sys.exit(-1)
 
 # Collect all the configuration properties
-server = sys.argv[1]
+domain = sys.argv[1]
 tenantId = sys.argv[2]
 username = sys.argv[3]
 password = getpass.getpass(f'Password for user {tenantId}/{username}: ')
-topic = 'demoTopic'
 
 # Create and configure a new MQTT client using basic authentication.
 # The client will not attempt to connect and authenticate immediately.
@@ -38,16 +37,16 @@ client.tls_set()
 
 # Connect the MQTT client to the server and start processing received
 # received messages in the background
-client.connect(server, 9883)
+client.connect(domain, 9883)
 client.loop_start()
 
 # Subscribe to the topic
-client.subscribe(topic, qos=1)
+client.subscribe('demoTopicB', qos=1)
 
 # Send a message every second forever
 while True:
    now = time.time()
    payload = f'Message sent at time {time.ctime(now)}'
-   print(f'Publishing message on topic {topic} with payload: {payload}')
-   client.publish(topic, payload, qos=1)
-   time.sleep(1.0-(time.time()-now))
+   print(f'Publishing message on topic demoTopicA with payload: {payload}')
+   client.publish('demoTopicA', payload, qos=1)
+   time.sleep(10.0-(time.time()-now))
