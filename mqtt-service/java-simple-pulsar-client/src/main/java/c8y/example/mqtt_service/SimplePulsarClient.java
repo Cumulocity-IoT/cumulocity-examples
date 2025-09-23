@@ -48,7 +48,7 @@ public class SimplePulsarClient {
                 final String clientId = message.getProperty("clientID");
                 final String topic = message.getProperty("topic");
                 System.out.println(MessageFormat.format("Received message from MQTT device {0} on MQTT topic {1}", clientId, topic));
-                System.out.println(MessageFormat.format("Message payload: {0}", message.getValue()));
+                System.out.println(MessageFormat.format("Message payload: {0}", new String(message.getValue(), StandardCharsets.UTF_8)));
                 System.out.println(MessageFormat.format("Message properties: {0}", message.getProperties()));
                 try {
                     // Acknowledge the message
