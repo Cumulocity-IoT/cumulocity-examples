@@ -1,6 +1,7 @@
 package c8y.example.mqtt_service;
 
 import java.text.MessageFormat;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
@@ -41,9 +42,9 @@ public class SimplePulsarClient {
 
         // Create a simple message listener that will log some details of
         // each message received, when registered with a consumer.
-        final MessageListener<String> listener = new MessageListener<String>() {
+        final MessageListener<byte[]> listener = new MessageListener<byte[]>() {
             @Override
-            public void received(Consumer<String> consumer, Message<String> message) {
+            public void received(Consumer<byte[]> consumer, Message<byte[]> message) {
                 final String clientId = message.getProperty("clientID");
                 final String topic = message.getProperty("topic");
                 System.out.println(MessageFormat.format("Received message from MQTT device {0} on MQTT topic {1}", clientId, topic));
@@ -61,7 +62,7 @@ public class SimplePulsarClient {
         // Create a Pulsar consumer on the from-device topic for the tenant,
         // using the listener defined above to process each message.
         // This will trigger connection and authentication by the client.
-        final Consumer<String> consumer = client.newConsumer(Schema.STRING)
+        final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
             .topic(MessageFormat.format("persistent://{0}/mqtt/from-device", tenantId))
             .subscriptionName("demoSubscription")
             .messageListener(listener)
@@ -73,7 +74,7 @@ public class SimplePulsarClient {
         // subscription if something goes wrong.
         try {
             // Create a Pulsar producer on the to-device topic for the tenant.
-            final Producer<String> producer = client.newProducer(Schema.STRING)
+            final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
                 .topic(MessageFormat.format("persistent://{0}/mqtt/to-device", tenantId))
                 .create();
             System.out.println("Created Pulsar producer");
@@ -83,7 +84,7 @@ public class SimplePulsarClient {
                 .property("clientID", "demoClient")
                 .property("topic", "demoTopic")
                 .key("demoClient")
-                .value("Message sent to a single device")
+                .value("Message sent to a single device".getBytes(StandardCharsets.UTF_8))
                 .send();
             System.out.println("Sent message to single device");
 
@@ -92,7 +93,7 @@ public class SimplePulsarClient {
                 .property("clientID", "")
                 .property("topic", "demoTopic")
                 .key("demoTopic")
-                .value("Message sent to all subscribed devices")
+                .value("Message sent to all subscribed devices".getBytes(StandardCharsets.UTF_8))
                 .send();
             System.out.println("Sent message to all subscribed devices");
 
