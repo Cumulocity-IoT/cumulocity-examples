@@ -82,7 +82,7 @@ public class SimplePulsarClient {
             // Publish a message to a single MQTT device
             producer.newMessage()
                 .property("clientID", "demoClient")
-                .property("topic", "demoTopic")
+                .property("topic", "demoTopicB")
                 .key("demoClient")
                 .value("Message sent to a single device".getBytes(StandardCharsets.UTF_8))
                 .send();
@@ -91,7 +91,7 @@ public class SimplePulsarClient {
             // Publish a message to all MQTT devices subscribed to a topic
             producer.newMessage()
                 .property("clientID", "")
-                .property("topic", "demoTopic")
+                .property("topic", "demoTopicB")
                 .key("demoTopic")
                 .value("Message sent to all subscribed devices".getBytes(StandardCharsets.UTF_8))
                 .send();
