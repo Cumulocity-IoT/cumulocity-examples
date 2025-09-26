@@ -1,4 +1,4 @@
-package c8y.example.mqtt_service;
+package c8y.example.mqttservice;
 
 import java.text.MessageFormat;
 import java.nio.charset.StandardCharsets;
