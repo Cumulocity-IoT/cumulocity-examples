@@ -14,7 +14,7 @@ import org.apache.pulsar.client.impl.auth.AuthenticationBasic;
 
 public class SimplePulsarClient {
     public static void main(String[] args) throws Exception {
-        // Validate command line
+        // Validate command line.
         if (args.length != 2) {
             System.err.println("Usage: SimplePulsarClient <tenantId> <username>");
             System.err.println("The Pulsar URL will be read from the C8Y_BASEURL_PULSAR environment variable");
@@ -22,7 +22,7 @@ public class SimplePulsarClient {
             System.exit(-1);
         }
 
-        // Collect all the configuration properties
+        // Collect all the configuration properties.
         final String pulsarUrl = System.getenv("C8Y_BASEURL_PULSAR");
         final String tenantId = args[0];
         final String username = args[1];
@@ -51,7 +51,7 @@ public class SimplePulsarClient {
                 System.out.println(MessageFormat.format("Message payload: {0}", new String(message.getValue(), StandardCharsets.UTF_8)));
                 System.out.println(MessageFormat.format("Message properties: {0}", message.getProperties()));
                 try {
-                    // Acknowledge the message
+                    // Acknowledge the message.
                     consumer.acknowledge(message);
                 } catch (PulsarClientException e) {
                     e.printStackTrace();
@@ -79,7 +79,7 @@ public class SimplePulsarClient {
                 .create();
             System.out.println("Created Pulsar producer");
 
-            // Publish a message to a single MQTT device
+            // Publish a message to a single MQTT device.
             producer.newMessage()
                 .property("clientID", "demoClient")
                 .property("topic", "demoTopicB")
@@ -97,10 +97,10 @@ public class SimplePulsarClient {
                 .send();
             System.out.println("Sent message to all subscribed devices");
 
-            // Pause for a minute to allow some test messages to be consumed
+            // Pause for a minute to allow some test messages to be consumed.
             Thread.sleep(60 * 1000);
 
-            // Close the producer
+            // Close the producer.
             producer.close();
         }
         finally {
