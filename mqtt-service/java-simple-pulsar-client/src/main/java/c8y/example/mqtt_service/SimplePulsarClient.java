@@ -88,11 +88,11 @@ public class SimplePulsarClient {
                 .send();
             System.out.println("Sent message to single device");
 
-            // Publish a message to all MQTT devices subscribed to a topic
+            // Publish a message to all MQTT devices subscribed to a topic.
+            // Note that the "clientID" property is omitted here.
             producer.newMessage()
-                .property("clientID", "")
                 .property("topic", "demoTopicB")
-                .key("demoTopic")
+                .key("demoTopicB")
                 .value("Message sent to all subscribed devices".getBytes(StandardCharsets.UTF_8))
                 .send();
             System.out.println("Sent message to all subscribed devices");
