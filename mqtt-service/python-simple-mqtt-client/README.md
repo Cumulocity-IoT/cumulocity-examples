@@ -33,12 +33,12 @@ pip install paho-mqtt
 
 Run the example client:
 ```shell
-./python_simple_mqtt_client.py <DOMAIN> <TENANT> <USERNAME>
+./python_simple_mqtt_client.py <DOMAIN> <TENANTID> <USERNAME>
 ```
 
 Where:
 * `<DOMAIN>` is the domain of your Cumulocity tenant, e.g. `my-tenant.cumulocity.com`.
-* `<TENANT>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
+* `<TENANTID>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
 * `<USER>` is a username in your tenant that is authorized to connect to the MQTT Service.
 
 The client will publish a message to topic `demoTopicA` every 10 seconds, and subscribe to topic `demoTopicB` to receive messages published by a Pulsar client.
@@ -49,7 +49,7 @@ Publishing message on topic demoTopicA with payload: Message sent at time Tue Se
 Connected with result code Success
 Publishing message on topic demoTopicA with payload: Message sent at time Tue Sep 23 17:51:42 2025
 Received message on topic demoTopicB with payload: b'Message sent to a single device' and message id 1
-Received message on topic demoTopicB with payload: b'Message sent to all subscribed devices' and message id 1
+Received message on topic demoTopicB with payload: b'Message sent to all subscribed devices' and message id 2
 Publishing message on topic demoTopicA with payload: Message sent at time Tue Sep 23 17:51:52 2025
 Publishing message on topic demoTopicA with payload: Message sent at time Tue Sep 23 17:52:02 2025
 ```

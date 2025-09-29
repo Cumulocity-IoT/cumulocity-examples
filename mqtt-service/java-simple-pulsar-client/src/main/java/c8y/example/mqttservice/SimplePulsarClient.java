@@ -16,7 +16,7 @@ public class SimplePulsarClient {
     public static void main(String[] args) throws Exception {
         // Validate command line.
         if (args.length != 2) {
-            System.err.println("Usage: SimplePulsarClient <tenantId> <username>");
+            System.err.println("Usage: SimplePulsarClient <tenantID> <username>");
             System.err.println("The Pulsar URL will be read from the C8Y_BASEURL_PULSAR environment variable");
             System.err.println("The password will be read from the console");
             System.exit(-1);
@@ -24,13 +24,13 @@ public class SimplePulsarClient {
 
         // Collect all the configuration properties.
         final String pulsarUrl = System.getenv("C8Y_BASEURL_PULSAR");
-        final String tenantId = args[0];
+        final String tenantID = args[0];
         final String username = args[1];
-        final String password = new String(System.console().readPassword("Password for user %s/%s: ", tenantId, username));
+        final String password = new String(System.console().readPassword("Password for user %s/%s: ", tenantID, username));
 
         // Create the basic authentication credentials object.
         final AuthenticationBasic basicAuth = new AuthenticationBasic();
-        basicAuth.configure(MessageFormat.format("'{'\"userId\":\"{0}/{1}\",\"password\":\"{2}\"'}'", tenantId, username, password));
+        basicAuth.configure(MessageFormat.format("'{'\"userId\":\"{0}/{1}\",\"password\":\"{2}\"'}'", tenantID, username, password));
 
         // Create a Pulsar client using the basic authentication credentials.
         // The client will *not* try to connect and authenticate immediately.
@@ -63,7 +63,7 @@ public class SimplePulsarClient {
         // using the listener defined above to process each message.
         // This will trigger connection and authentication by the client.
         final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
-            .topic(MessageFormat.format("persistent://{0}/mqtt/from-device", tenantId))
+            .topic(MessageFormat.format("persistent://{0}/mqtt/from-device", tenantID))
             .subscriptionName("demoSubscription")
             .messageListener(listener)
             .subscribe();
@@ -75,7 +75,7 @@ public class SimplePulsarClient {
         try {
             // Create a Pulsar producer on the to-device topic for the tenant.
             final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
-                .topic(MessageFormat.format("persistent://{0}/mqtt/to-device", tenantId))
+                .topic(MessageFormat.format("persistent://{0}/mqtt/to-device", tenantID))
                 .create();
             System.out.println("Created Pulsar producer");
 

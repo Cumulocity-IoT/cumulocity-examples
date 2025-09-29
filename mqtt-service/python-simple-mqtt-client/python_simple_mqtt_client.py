@@ -16,22 +16,22 @@ def on_message(client, userdata, msg):
 
 # Validate command line.
 if len(sys.argv) < 4:
-   print('Usage: ./python_simple_mqtt_client.py <domain> <tenant> <username>')
+   print('Usage: ./python_simple_mqtt_client.py <domain> <tenantID> <username>')
    print('The password for the tenant user will be read from the console')
    sys.exit(-1)
 
 # Collect all the configuration properties.
 domain = sys.argv[1]
-tenantId = sys.argv[2]
+tenantID = sys.argv[2]
 username = sys.argv[3]
-password = getpass.getpass(f'Password for user {tenantId}/{username}: ')
+password = getpass.getpass(f'Password for user {tenantID}/{username}: ')
 
 # Create and configure a new MQTT client using basic authentication.
 # The client will not attempt to connect and authenticate immediately.
 client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2, client_id='demoClient', clean_session=True, manual_ack=False)
 client.on_connect = on_connect
 client.on_message = on_message
-client.username = f'{tenantId}/{username}'
+client.username = f'{tenantID}/{username}'
 client.password = password
 client.tls_set()
 

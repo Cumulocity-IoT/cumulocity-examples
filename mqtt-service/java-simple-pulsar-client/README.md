@@ -17,13 +17,13 @@ git clone git@github.com:Cumulocity-IoT/cumulocity-examples.git
 cd mqtt-service/java-simple-pulsar-client
 mvn clean package
 export C8Y_BASEURL_PULSAR=pulsar+ssl://<DOMAIN>:6651
-java -jar target/java-simple-pulsar-client-<VERSION>-jar-with-dependencies.jar <TENANT> <USER>
+java -jar target/java-simple-pulsar-client-<VERSION>-jar-with-dependencies.jar <TENANTID> <USER>
 ```
 
 Where:
 * `<DOMAIN>` is the domain of your Cumulocity tenant, e.g. `my-tenant.cumulocity.com`.
 * `<VERSION>` is the version of the examples that was built, e.g. `2025.61.0-SNAPSHOT`.
-* `<TENANT>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
+* `<TENANTID>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
 * `<USER>` is a username in your tenant that is authorized to connect to the MQTT Service.
 
 The client will pause for 60 seconds after publishing some messages, to allow time for MQTT devices to publish messages that will be consumed by the client.
