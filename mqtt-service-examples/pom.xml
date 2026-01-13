@@ -18,6 +18,7 @@
 
     <modules>
         <module>mqtt-service-hello</module>
+        <module>mqtt-service-pulsar-microservice</module>
     </modules>
 
     <properties>
