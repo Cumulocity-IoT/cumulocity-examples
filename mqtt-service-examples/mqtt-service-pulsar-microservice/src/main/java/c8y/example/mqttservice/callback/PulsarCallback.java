@@ -38,7 +38,7 @@ public class PulsarCallback implements MessageListener<byte[]>
             //Filter on topic level but filter could also be implemented on payload or client ID level
             try {
                if(topic.equals("device/sim/message")) {
-                    pulsarClientService.processMessage(tenant, msg);
+                    pulsarClientService.processMessage(tenant, msg, client);
                     // Acknowledge message after successful processing
                     consumer.acknowledge(msg);
                 } else {
