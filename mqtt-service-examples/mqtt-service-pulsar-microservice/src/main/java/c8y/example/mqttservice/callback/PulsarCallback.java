@@ -5,6 +5,7 @@ import com.cumulocity.sdk.client.SDKException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
@@ -29,7 +30,9 @@ public class PulsarCallback implements MessageListener<byte[]>
         //This is the clientID who originally sent the message
         String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
         //This is the raw-message as byte-array
-        log.info("{} - Received message from MQTT device {} on MQTT topic {}, internal Topic {}", tenant, client, topic, internalMQTTTServiceTopic);
+        String payload = new String(msg.getData(), StandardCharsets.UTF_8);
+
+        log.info("{} - Received message {} from MQTT device {} on MQTT topic {} with payload: {}", tenant, msg.getMessageId(), client, topic, payload);
 
         // From here we should ideally process the message asynchronously and unblock the callback-thread because we could receive a lot of messages here
         virtualThreadPool.submit(() -> {

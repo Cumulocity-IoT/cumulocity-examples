@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -206,15 +207,16 @@ public class PulsarClientService {
         //This is the clientID who originally sent the message
         String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
         //This is the raw-message as byte-array
-        msg.getData();
+        String payload = new String(msg.getData(), StandardCharsets.UTF_8);
         try {
             if(topic.equals("device/sim/message")) {
-                log.info("{} - Message is flagged as to be processed {}", tenant, msg);
+                log.info("{} - Message {} is flagged as to be processed", tenant, msg.getMessageId());
                 //Step 2: Transform message(s) to target format
                 //Step 3: Send message to target API(s)
                 try {
                     transformAndSendMessage(tenant, msg, client);
                     //Step 4: Acknowledge message after successful processing
+                    log.info("{} - Processing of message {} successful!", tenant, msg.getMessageId());
                     consumer.acknowledge(msg);
                 } catch (Exception e) {
                     log.error("{} - Error transforming and sending message", tenant, e);
@@ -222,9 +224,10 @@ public class PulsarClientService {
                 }
             } else {
                 //Acknowledge all other messages but ignore them for processing
-                log.info("{} - Message will be ignored for processing {}", tenant, msg);
+                log.info("{} - Message {} will be ignored for processing ", tenant, msg.getMessageId());
                 consumer.acknowledge(msg);
             }
+
         } catch (SDKException e) {
             log.error("{} - Error processing message in Cumulocity: ",tenant, e);
             consumer.negativeAcknowledge(msg);
