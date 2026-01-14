@@ -10,7 +10,7 @@ import com.cumulocity.rest.representation.identity.ExternalIDRepresentation;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import com.cumulocity.rest.representation.measurement.MeasurementRepresentation;
 import com.cumulocity.sdk.client.SDKException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +18,18 @@ import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.impl.auth.AuthenticationBasic;
 import org.apache.pulsar.shade.com.google.gson.JsonObject;
 import org.apache.pulsar.shade.com.google.gson.JsonParser;
-import org.apache.pulsar.shade.com.google.gson.JsonSyntaxException;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -34,6 +37,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Service
 @Slf4j
@@ -79,6 +84,15 @@ public class PulsarClientService {
     @Autowired
     MicroserviceSubscriptionsService subscriptionsService;
 
+    @Bean
+    public RetryTemplate subscriptionRetryTemplate() {
+        return RetryTemplate.builder()
+                .infiniteRetry()
+                .retryOn(Throwable.class)
+                .fixedBackoff(5000)
+                .build();
+    }
+
     @Bean("virtualThreadPool")
     public ExecutorService virtualThreadPool() {
         final ThreadFactory factory = Thread.ofVirtual().name("virtThread-", 0).factory();
@@ -94,7 +108,13 @@ public class PulsarClientService {
             //Step 1: Initialize Pulsar Client per tenant
             initializePulsarClientForTenant(tenant, event.getCredentials());
             //Step 2: Create a consumer and subscribe to pulsar
-            createConsumer(tenant, SUBSCRIPTION_NAME, clientMap.get(tenant), callbackMap.get(tenant));
+            subscriptionRetryTemplate().execute(context -> {
+               if(context.getRetryCount() > 0)
+                   log.info("{} - Retrying to subscribe to Puslar...", tenant);
+                createConsumer(tenant, SUBSCRIPTION_NAME, clientMap.get(tenant), callbackMap.get(tenant));
+                return null;
+            });
+
         } catch (Exception e) {
             log.error("{} - Initialization error: {}", tenant, e.getMessage(), e);
         }
@@ -151,15 +171,17 @@ public class PulsarClientService {
         PulsarCallback callback = new PulsarCallback(tenant, virtualThreadPool(), this);
         callbackMap.put(tenant, callback);
     }
-
     public Consumer<byte[]> createConsumer(String tenant, String subscriptionName, PulsarClient client, PulsarCallback callback) throws PulsarClientException {
+        log.info("{} - Creating and subscribing consumer to Pulsar ...", tenant);
         String fromDevice = String.format("persistent://%s/%s/%s",
                 tenant, PULSAR_NAMESPACE, PULSAR_FROM_DEVICE_TOPIC);
         final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
                 .topic(fromDevice)
                 .subscriptionName(subscriptionName)
+                .autoUpdatePartitions(false)
                 .messageListener(callback)
                 .subscribe();
+        log.info("{} - Subscription to Pulsar successful!", tenant);
         consumerMap.put(tenant, consumer);
         return consumer;
     }
@@ -169,6 +191,7 @@ public class PulsarClientService {
                 tenant, PULSAR_NAMESPACE, PULSAR_TO_DEVICE_TOPIC);
         final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
                 .topic(toDevice)
+                .autoUpdatePartitions(false)
                 .create();
         return producer;
     }
