@@ -37,7 +37,7 @@ TODOs:
 
 ```shell
 git clone git@github.com:Cumulocity-IoT/cumulocity-examples.git
-cd mqtt-service-examples/mqtt-service-pulsar-microservice
+cd mqtt-service/mqtt-service-pulsar-microservice
 mvn clean package
 ```
 
