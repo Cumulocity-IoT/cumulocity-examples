@@ -49,11 +49,12 @@ public class C8YClient {
         return null;
     }
 
-    public ManagedObjectRepresentation createDevice(String tenant, String name, String deviceId, String type) {
+    public ManagedObjectRepresentation createDevice(String tenant, String name, String deviceId, String type, String extIdType) {
         try {
             ManagedObjectRepresentation mor = new ManagedObjectRepresentation();
             mor.setName(name);
             mor.set(new Agent());
+            mor.setType(type);
             HashMap<String, String> agentFragments = new HashMap<>();
             agentFragments.put("name", "Example MQTT Service Microservice");
             agentFragments.put("version", "1.0.0");
@@ -64,7 +65,7 @@ public class C8YClient {
             mor = inventoryApi.create(mor);
             log.info("{} - New device created: {}", tenant, mor);
             ExternalIDRepresentation extId = new ExternalIDRepresentation();
-            if(type != null)
+            if(extIdType != null)
                 extId.setType(type);
             else
                 extId.setType("c8y_Serial");

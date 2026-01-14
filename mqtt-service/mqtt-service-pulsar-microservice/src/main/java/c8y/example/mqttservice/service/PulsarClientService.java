@@ -257,6 +257,7 @@ public class PulsarClientService {
             String deviceId;
             String type = "c8y_TemperatureMeasurement";
             String name = "c8y_TemperatureMeasurement";
+            String extIdType = "c8y_Serial";
             if(jsonObject.has("temperature")) {
                 JsonObject temperatureObject = jsonObject.get("temperature").getAsJsonObject();
                 unit = temperatureObject.get("unit").getAsString();
@@ -284,11 +285,11 @@ public class PulsarClientService {
             }
 
             subscriptionsService.runForTenant(tenant, () -> {
-                ExternalIDRepresentation extId = c8YClient.retrieveExternalId(tenant, "c8y_Serial", deviceId);
+                ExternalIDRepresentation extId = c8YClient.retrieveExternalId(tenant, extIdType, deviceId);
                 ManagedObjectRepresentation mor;
                 if(extId == null) {
                     log.info("{} - Device with id {} does not exists, creating it", tenant, deviceId);
-                    mor = c8YClient.createDevice(tenant,"MQTT Service Example Device "+deviceId, deviceId, "c8y_MQTTServiceExampleDevice");
+                    mor = c8YClient.createDevice(tenant,"MQTT Service Example Device "+deviceId, deviceId, "c8y_MQTTServiceExampleDevice", extIdType);
                     if(mor == null)
                         throw new RuntimeException("Error creating device");
                 } else {
