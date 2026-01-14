@@ -18,6 +18,7 @@
 
     <modules>
         <module>java-simple-pulsar-client</module>
+        <module>mqtt-service-pulsar-microservice</module>
     </modules>
 
     <build>
