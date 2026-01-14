@@ -10,7 +10,7 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>mqtt-service-pulsar-microservice</artifactId>
+    <artifactId>mqtt-service-pulsar-ms</artifactId>
     <version>${revision}${changelist}</version>
     <name>Cumulocity :: Examples :: MQTT Service :: MQTT Service Pulsar Microservice Example</name>
 
@@ -187,7 +187,7 @@
                             <sourceFile>
                                 ${project.build.directory}/${artifactId}-${project.version}.zip
                             </sourceFile>
-                            <destinationFile>${project.build.directory}/${artifactId}}.zip</destinationFile>
+                            <destinationFile>${project.build.directory}/${artifactId}.zip</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
