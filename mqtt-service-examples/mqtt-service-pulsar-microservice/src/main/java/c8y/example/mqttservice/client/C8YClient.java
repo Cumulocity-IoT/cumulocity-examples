@@ -78,7 +78,7 @@ public class C8YClient {
         return null;
     }
 
-    public MeasurementRepresentation createSimpleMeasurement(String tenant, ManagedObjectRepresentation mor, String type, DateTime time, BigDecimal value, String unit) {
+    public MeasurementRepresentation createSimpleMeasurement(String tenant, ManagedObjectRepresentation mor, String name, String type, DateTime time, BigDecimal value, String unit) {
         MeasurementRepresentation measurementRepresentation = new MeasurementRepresentation();
         try {
             measurementRepresentation.setType(type);
@@ -87,10 +87,11 @@ public class C8YClient {
             MeasurementValue measurementValue = new MeasurementValue();
             HashMap<String, MeasurementValue> series = new HashMap<>();
             measurementValue.setValue(value);
+
             if (unit != null)
                 measurementValue.setUnit(unit);
             series.put("T", measurementValue);
-            measurementRepresentation.set(series);
+            measurementRepresentation.set(series, name);
             log.info("{} - Creating Measurement {}", tenant, measurementRepresentation.toJSON());
             return measurementApi.create(measurementRepresentation);
         } catch (SDKException e) {

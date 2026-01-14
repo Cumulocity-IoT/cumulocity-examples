@@ -256,6 +256,7 @@ public class PulsarClientService {
             DateTime time;
             String deviceId;
             String type = "c8y_TemperatureMeasurement";
+            String name = "c8y_TemperatureMeasurement";
             if(jsonObject.has("temperature")) {
                 JsonObject temperatureObject = jsonObject.get("temperature").getAsJsonObject();
                 unit = temperatureObject.get("unit").getAsString();
@@ -294,7 +295,7 @@ public class PulsarClientService {
                     log.info("{} - Device with id {} already exists", tenant, deviceId);
                     mor = extId.getManagedObject();
                 }
-                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor, type, time, value, unit);
+                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor,  name, type, time, value, unit);
                 if(measurement == null)
                     throw new RuntimeException("Error creating measurement");
             });
