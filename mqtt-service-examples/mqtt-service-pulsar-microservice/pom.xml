@@ -12,7 +12,7 @@
 
     <artifactId>mqtt-service-pulsar-microservice</artifactId>
     <version>${revision}${changelist}</version>
-    <name>Cumulocity :: Examples :: MQTT Service :: Java Integration Microservice Example</name>
+    <name>Cumulocity :: Examples :: MQTT Service :: MQTT Service Pulsar Microservice Example</name>
 
     <licenses>
         <license>
@@ -25,6 +25,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <pulsar.version>4.0.6</pulsar.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <main.class>c8y.example.mqttservice.IntegrationMicroservice</main.class>
     </properties>
 
     <dependencyManagement>
@@ -55,7 +57,10 @@
             <groupId>com.nsn.cumulocity.clients-java</groupId>
             <artifactId>microservice-autoconfigure</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.nsn.cumulocity.model</groupId>
+            <artifactId>device-capability-model</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -70,6 +75,12 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -100,7 +111,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>${java.version}</release>
+                    <release>21</release>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -130,13 +143,29 @@
                             <goal>package</goal>
                         </goals>
                         <configuration>
-                            <name>java-integration-microservice</name>
-                            <image>ava-integration-microservice</image>
+                            <name>mqtt-service-ms-example</name>
+                            <image>mqtt-service-ms-example</image>
                             <encoding>UTF-8</encoding>
                             <rpmSkip>true</rpmSkip>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.38</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
     </build>

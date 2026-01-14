@@ -36,6 +36,7 @@ public class C8YClient {
     @Autowired
     MeasurementApi measurementApi;
 
+    //FIXME: This method should use a Cache instead of calling on every message retrieved the API
     public ExternalIDRepresentation retrieveExternalId(String tenant, String type, String externalId) {
         try {
             ID id = new ID();
@@ -88,6 +89,7 @@ public class C8YClient {
             if (unit != null)
                 measurementValue.setUnit(unit);
             measurementRepresentation.set(measurementValue);
+            log.info("{} - Creating Measurement {}", tenant, measurementRepresentation.toJSON());
             return measurementApi.create(measurementRepresentation);
         } catch (SDKException e) {
             log.error("{} - Error when creating measurement {}", tenant, measurementRepresentation.toJSON());

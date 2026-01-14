@@ -8,6 +8,8 @@ import com.cumulocity.microservice.subscription.model.MicroserviceSubscriptionRe
 import com.cumulocity.microservice.subscription.service.MicroserviceSubscriptionsService;
 import com.cumulocity.rest.representation.identity.ExternalIDRepresentation;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
+import com.cumulocity.rest.representation.measurement.MeasurementRepresentation;
+import com.cumulocity.sdk.client.SDKException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -171,8 +173,46 @@ public class PulsarClientService {
         return producer;
     }
 
-    public void processMessage(String tenant, Message<byte[]> msg, String clientId) throws JsonSyntaxException {
-        log.info("{} - Processing message {}", tenant, msg);
+    public void processMessage(String tenant, Consumer<byte[]> consumer, Message<byte[]> msg) {
+        /* Step 1: Filter the message  */
+        //Filter on topic level but filter could also be implemented on payload or client ID level
+        //This is in most cases "from-device" when the message was originated by a device
+        String internalMQTTTServiceTopic = msg.getTopicName();
+        //This is the MQTT Topic used by the device and provided as message property
+        String topic = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_TOPIC);
+        //This is the clientID who originally sent the message
+        String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
+        //This is the raw-message as byte-array
+        msg.getData();
+        try {
+            if(topic.equals("device/sim/message")) {
+                log.info("{} - Message is flagged as to be processed {}", tenant, msg);
+                //Step 2: Transform message(s) to target format
+                //Step 3: Send message to target API(s)
+                try {
+                    transformAndSendMessage(tenant, msg, client);
+                    //Step 4: Acknowledge message after successful processing
+                    consumer.acknowledge(msg);
+                } catch (Exception e) {
+                    log.error("{} - Error transforming and sending message", tenant, e);
+                    consumer.negativeAcknowledge(msg);
+                }
+            } else {
+                //Acknowledge all other messages but ignore them for processing
+                log.info("{} - Message will be ignored for processing {}", tenant, msg);
+                consumer.acknowledge(msg);
+            }
+        } catch (SDKException e) {
+            log.error("{} - Error processing message in Cumulocity: ",tenant, e);
+            consumer.negativeAcknowledge(msg);
+        }
+        catch (PulsarClientException e) {
+            log.error("{} - Error acking message: ",tenant, e);
+        }
+    }
+
+    public void transformAndSendMessage(String tenant, Message<byte[]> msg, String clientId) throws RuntimeException {
+        log.info("{} - Transforming Message {}", tenant, msg);
         //Here we assume we just receive JSON Format and Objects in the following format:
         /**
          {
@@ -204,6 +244,7 @@ public class PulsarClientService {
             } else {
                 time = DateTime.now();
             }
+            //In this case the deviceId is part of the payload so we use it here - otherwise we use the clientId
             if(jsonObject.has("deviceId")) {
                 deviceId = jsonObject.get("deviceId").getAsString();
                 deviceClientIdMap.put(deviceId, clientId);
@@ -220,11 +261,17 @@ public class PulsarClientService {
                 ExternalIDRepresentation extId = c8YClient.retrieveExternalId(tenant, "c8y_Serial", deviceId);
                 ManagedObjectRepresentation mor;
                 if(extId == null) {
+                    log.info("{} - Device with id {} does not exists, creating it", tenant, deviceId);
                     mor = c8YClient.createDevice(tenant,"MQTT Service Example Device "+deviceId, deviceId, "c8y_MQTTServiceExampleDevice");
+                    if(mor == null)
+                        throw new RuntimeException("Error creating device");
                 } else {
+                    log.info("{} - Device with id {} already exists", tenant, deviceId);
                     mor = extId.getManagedObject();
                 }
-                c8YClient.createSimpleMeasurement(tenant, mor, type, time, value, unit);
+                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor, type, time, value, unit);
+                if(measurement == null)
+                    throw new RuntimeException("Error creating measurement");
             });
 
         }

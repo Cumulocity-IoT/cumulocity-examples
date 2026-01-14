@@ -29,29 +29,11 @@ public class PulsarCallback implements MessageListener<byte[]>
         //This is the clientID who originally sent the message
         String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
         //This is the raw-message as byte-array
-        byte[] payloadBytes = msg.getData();
         log.info("{} - Received message from MQTT device {} on MQTT topic {}, internal Topic {}", tenant, client, topic, internalMQTTTServiceTopic);
 
         // From here we should ideally process the message asynchronously and unblock the callback-thread because we could receive a lot of messages here
         virtualThreadPool.submit(() -> {
-            /* Step 1: Filter the message  */
-            //Filter on topic level but filter could also be implemented on payload or client ID level
-            try {
-               if(topic.equals("device/sim/message")) {
-                    pulsarClientService.processMessage(tenant, msg, client);
-                    // Acknowledge message after successful processing
-                    consumer.acknowledge(msg);
-                } else {
-                    //Acknowledge all other messages but ignore them for processing
-                    consumer.acknowledge(msg);
-                }
-            } catch (SDKException e) {
-                log.error("{} - Error processing message in Cumulocity: ",tenant, e);
-                consumer.negativeAcknowledge(msg);
-            }
-            catch (PulsarClientException e) {
-                log.error("{} - Error acking message: ",tenant, e);
-            }
+            pulsarClientService.processMessage(tenant, consumer, msg);
         });
     }
 
