@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>c8y.example.mqtt.service</groupId>
+        <groupId>c8y.example.mqtt-service</groupId>
         <artifactId>mqtt-service-examples</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
 
     <artifactId>mqtt-service-pulsar-ms</artifactId>
     <version>${revision}${changelist}</version>
-    <name>Cumulocity :: Examples :: MQTT Service :: MQTT Service Pulsar Microservice Example</name>
+    <name>Cumulocity :: Examples :: MQTT Service :: Pulsar Microservice Example</name>
 
     <licenses>
         <license>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
-            <version>${spring-retry.version}</version>
+            <version>2.0.10</version>
         </dependency>
     </dependencies>
 
