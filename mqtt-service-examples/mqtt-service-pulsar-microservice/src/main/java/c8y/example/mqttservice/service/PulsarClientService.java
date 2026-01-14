@@ -238,7 +238,6 @@ public class PulsarClientService {
     }
 
     public void transformAndSendMessage(String tenant, Message<byte[]> msg, String clientId) throws RuntimeException {
-        log.info("{} - Transforming Message {}", tenant, msg);
         //Here we assume we just receive JSON Format and Objects in the following format:
         /**
          {

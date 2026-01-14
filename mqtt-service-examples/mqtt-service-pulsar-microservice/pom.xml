@@ -148,8 +148,8 @@
                             <goal>package</goal>
                         </goals>
                         <configuration>
-                            <name>mqtt-service-ms-example</name>
-                            <image>mqtt-service-ms-example</image>
+                            <name>${artifactId}</name>
+                            <image>${artifactId}</image>
                             <encoding>UTF-8</encoding>
                             <rpmSkip>true</rpmSkip>
                         </configuration>
@@ -171,6 +171,26 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>
+                                ${project.build.directory}/${artifactId}-${project.version}.zip
+                            </sourceFile>
+                            <destinationFile>${project.build.directory}/${artifactId}}.zip</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

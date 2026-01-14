@@ -85,10 +85,12 @@ public class C8YClient {
             measurementRepresentation.setDateTime(time);
             measurementRepresentation.setSource(mor);
             MeasurementValue measurementValue = new MeasurementValue();
+            HashMap<String, MeasurementValue> series = new HashMap<>();
             measurementValue.setValue(value);
             if (unit != null)
                 measurementValue.setUnit(unit);
-            measurementRepresentation.set(measurementValue);
+            series.put("T", measurementValue);
+            measurementRepresentation.set(series);
             log.info("{} - Creating Measurement {}", tenant, measurementRepresentation.toJSON());
             return measurementApi.create(measurementRepresentation);
         } catch (SDKException e) {
