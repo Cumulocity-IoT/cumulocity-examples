@@ -1,47 +1,66 @@
-# Simple MQTT Service Java client example
+# Reference MQTT Service Pulsar Integration Microservice
 
-A simple Pulsar client for the Cumulocity MQTT Service written in Java.
-This is the runnable version of the example client described in the [user documentation](https://cumulocity.com/docs/device-integration/mqtt-service/#pulsar-client) for the MQTT Service.
-You should read that documentation before trying to run this example, to ensure that your tenant and user are correctly configured to use the MQTT Service.
+A simple microservice using a pulsar client to connect to Cumulocity MQTT Service. It should demonstrate how build a microservice to consume messages from devices which are connected to MQTT Service, filter & transform them and send them to Cumulocity.
+
+It contains an end-to-end example with the following functionality:
+- Connecting to MQTT Service Pulsar interface
+- Creating a consumer and subscription
+- An example of filtering a specific JSON message
+- An example of transforming a JSON message to a C8Y Measurement
+- Creating the measurements in Cumulocity
+
+Non-functional aspects have been implemented as a reference, including:
+- Fetching URL + credentials from provided environment variables
+- Default configuration of timeouts
+- Simple ID Handling, use deviceId from payload, otherwise use clientId to identify device.
+- Correlating and storing clientIds to DeviceIds (usable for a Producer with device isolation)
+- Async handling & acknowledgement of messages using Virtual Threads
+- Retry of failing subscription to Apache Pulsar
+- Creating a device when device doesn't exist
+
+TODOs:
+- Implementing Notification 2.0 to listen on Cumulocity Messages
+- Publishing messages to MQTT Service using a Pulsar Producer
+- Identity Cache Handling
+- More complex transformation
+- Implementing more Cumulocity API as examples
 
 ## Pre-requisites
 
-* Java 17+
+* Java 21+
 * Maven 3.9+
-* A Cumulocity tenant and user authorized to use the MQTT Service
+* A Cumulocity tenant with
+  * MQTT Service is subscribed
+  * Microservice hosting feature is subscribed
 
-## Running the demo
+## Build & deploy the microservice
 
 ```shell
 git clone git@github.com:Cumulocity-IoT/cumulocity-examples.git
-cd mqtt-service/java-simple-pulsar-client
+cd mqtt-service-examples/mqtt-service-pulsar-microservice
 mvn clean package
-export C8Y_BASEURL_PULSAR=pulsar+ssl://<DOMAIN>:6651
-java -jar target/java-simple-pulsar-client-<VERSION>-jar-with-dependencies.jar <TENANTID> <USER>
 ```
 
-Where:
-* `<DOMAIN>` is the domain of your Cumulocity tenant, e.g. `my-tenant.cumulocity.com`.
-* `<VERSION>` is the version of the examples that was built, e.g. `2025.61.0-SNAPSHOT`.
-* `<TENANTID>` is the **ID** (not the name) of your tenant, e.g. `t123456789`.
-* `<USER>` is a username in your tenant that is authorized to connect to the MQTT Service.
+Deploy the zip of the target folder to your Cumulocity tenant.
 
-The client will pause for 60 seconds after publishing some messages, to allow time for MQTT devices to publish messages that will be consumed by the client.
-The output should look similar to this, depending on which messages were published by devices while the demo client was running:
+## Test the microservice
+
+When the microservice is deployed it should state `Subscription to Pulsar successful!` in the end of the log files.
+Now you can use a MQTT Client tool of your choice e.g. MQTTx and connect to MQTT Service:
+- Host: `mqtt.eu-latest.cumulocity.com` (or appropriate instance you are using)
+- Port: `2883` or `9883` for SSL
+- Username: `<yourTenantId>/<yourUsername>`
+- Password: `<yourPassword>`
+
+Publish on topic `device/sim/message`
+```json
+{
+  "temperature": {
+    "value": 19,
+    "unit": "°C"
+  },
+  "deviceId": "dev4711"
+}
 ```
-Password for user t123456789/username: 
-SLF4J(W): No SLF4J providers were found.
-SLF4J(W): Defaulting to no-operation (NOP) logger implementation
-SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
-Created Pulsar client
-Created Pulsar consumer
-Created Pulsar producer
-Sent message to single device
-Sent message to all subscribed devices
-Received message from MQTT device demoClient on MQTT topic demoTopicA
-Message payload: Message sent at time Tue Sep 23 17:51:52 2025
-Message properties: {clientID=demoClient, topic=demoTopicA}
-Received message from MQTT device demoClient on MQTT topic demoTopicA
-Message payload: Message sent at time Tue Sep 23 17:52:02 2025
-Message properties: {clientID=demoClient, topic=demoTopicA}
-```
+
+You should see in the log that the message is received, filtered, transformed, a device is created and a measurement sent to Cumulocity.
