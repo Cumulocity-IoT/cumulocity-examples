@@ -3,7 +3,9 @@ FROM node:alpine
 WORKDIR /usr/app
 
 COPY ./package.json ./
-RUN npm install
-COPY ./ ./
+COPY ./package-lock.json ./
+RUN npm ci
+COPY ./*.js ./
+COPY ./.env ./
 
 CMD ["npm", "start"]

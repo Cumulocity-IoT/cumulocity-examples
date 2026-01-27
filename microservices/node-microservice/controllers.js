@@ -2,7 +2,7 @@
 
 /********************* Slack *********************/
 
-// Create a new instance of the WebClient class with the OAuth Access Token
+// Create a new instance of the WebClient class with the OAuth access token
 const { WebClient } = require("@slack/web-api");
 const web = new WebClient(process.env.SLACK_OAUTH_TOKEN);
 
@@ -10,12 +10,12 @@ const web = new WebClient(process.env.SLACK_OAUTH_TOKEN);
 const channelId = process.env.SLACK_CHANNEL_ID;
 
 // Format a message and post it to the channel
-async function postSlackMessage (adata) {
+async function postSlackMessage(adata) {
     // Alarm severity
     let color = {
-        "WARNING" : "#1c8ce3",
-        "MINOR"   : "#ff801f",
-        "MAJOR"   : "#e66400",
+        "WARNING": "#1c8ce3",
+        "MINOR": "#ff801f",
+        "MAJOR": "#e66400",
         "CRITICAL": "#e0000e"
     };
 
@@ -23,7 +23,7 @@ async function postSlackMessage (adata) {
     let src = adata.source;
     await web.chat.postMessage({
         channel: channelId,
-        attachments : [{
+        attachments: [{
             "text": adata.text,
             "fields": [
                 {
@@ -43,34 +43,32 @@ async function postSlackMessage (adata) {
 }
 
 
-/********************* Cumulocity IoT *********************/
+/********************* {{< product-c8y-iot >}} *********************/
 
-const { Client, FetchClient, BasicAuth } = require("@c8y/client");
+const { Client, BasicAuth } = require("@c8y/client");
 
 const baseUrl = process.env.C8Y_BASEURL;
-let cachedUsers = [];
+let cachedSubscriptions = [];
 
-// Get the subscribed users
-async function getUsers () {
+// Get the microservice subscriptions
+async function getSubscriptions() {
     const {
         C8Y_BOOTSTRAP_TENANT: tenant,
         C8Y_BOOTSTRAP_USER: user,
         C8Y_BOOTSTRAP_PASSWORD: password
     } = process.env;
 
-    const client = new FetchClient(new BasicAuth({ tenant, user, password }), baseUrl);
-    const res = await client.fetch("/application/currentApplication/subscriptions");
-
-    return res.json();
- }
+    const subscriptions = await Client.getMicroserviceSubscriptions({ tenant, user, password }, baseUrl);
+    return subscriptions;
+}
 
 
 // where the magic happens...
 (async () => {
 
-    cachedUsers = (await getUsers()).users;
+    cachedSubscriptions = (await getSubscriptions());
 
-    if (Array.isArray(cachedUsers) && cachedUsers.length) {
+    if (Array.isArray(cachedSubscriptions) && cachedSubscriptions.length) {
         // List filter for unresolved alarms only
         const filter = {
             pageSize: 100,
@@ -79,37 +77,46 @@ async function getUsers () {
         };
 
         try {
-            cachedUsers.forEach(async (user) => {
+            for (const subscription of cachedSubscriptions) {
                 // Service user credentials
-                let auth = new BasicAuth({ 
-                    user:     user.name,
-                    password: user.password,
-                    tenant:   user.tenant
+                let auth = new BasicAuth({
+                    user: subscription.user,
+                    password: subscription.password,
+                    tenant: subscription.tenant
                 });
 
                 // Platform authentication
                 let client = await new Client(auth, baseUrl);
-        
+
                 // Get filtered alarms and post a message to Slack
                 let { data } = await client.alarm.list(filter);
-                data.forEach((alarm) => {
-                    postSlackMessage(alarm);
-                });
-        
-                // Real time subscription for active alarms
-                client.realtime.subscribe("/alarms/*", (alarm) => {
-                    if (alarm.data.data.status === "ACTIVE") {
-                        postSlackMessage(alarm.data.data);
+
+                const postAlarmOnSlack = async (alarm) => {
+                    try {
+                        console.log(`Posting alarm ${alarm.id} to Slack...`);
+                        await postSlackMessage(alarm);
+                    } catch (err) {
+                        console.error(`Failed to post alarm ${alarm.id} to Slack`, err);
                     }
+                };
+                for (const alarm of data) {
+                    await postAlarmOnSlack(alarm);
+                }
+
+                // Real time subscription for active alarms
+                client.realtime.subscribe("/alarms/*", async (alarm) => {
+                    if (alarm.data.data.status !== "ACTIVE") {
+                        return;
+                    }
+                    await postAlarmOnSlack(alarm.data.data);
                 });
-            });
+            }
             console.log("listening to alarms...");
         }
         catch (err) {
             console.error(err);
         }
-    }
-    else {
+    } else {
         console.log("[ERROR]: Not subscribed/authorized users found.");
     }
 
