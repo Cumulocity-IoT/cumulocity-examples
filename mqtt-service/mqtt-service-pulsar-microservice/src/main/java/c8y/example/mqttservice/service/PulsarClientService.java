@@ -225,7 +225,7 @@ public class PulsarClientService {
         }
     }
 
-    public void transformAndSendMessage(String tenant, Message<byte[]> msg, String clientId) throws RuntimeException {
+    public void transformAndSendMessage(String tenant, Message<byte[]> msg, String clientId) throws SDKException {
         //Here we assume we just receive JSON Format and Objects in the following format:
         /**
          {
