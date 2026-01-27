@@ -181,6 +181,7 @@ public class PulsarClientService {
         final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
                 .topic(toDevice)
                 .sendTimeout(DEFAULT_OPERATION_TIMEOUT, TimeUnit.SECONDS)
+                .autoUpdatePartitions(false)
                 .create();
         return producer;
     }
