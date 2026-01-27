@@ -10,36 +10,27 @@ import com.cumulocity.rest.representation.identity.ExternalIDRepresentation;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import com.cumulocity.rest.representation.measurement.MeasurementRepresentation;
 import com.cumulocity.sdk.client.SDKException;
-
 import jakarta.annotation.PreDestroy;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.impl.auth.AuthenticationBasic;
 import org.apache.pulsar.shade.com.google.gson.JsonObject;
 import org.apache.pulsar.shade.com.google.gson.JsonParser;
-
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
-
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Service
 @Slf4j
@@ -47,7 +38,6 @@ public class PulsarClientService {
 
     // Pulsar message properties
     public static final String PULSAR_PROPERTY_TOPIC = "topic";
-    public static final String PULSAR_PROPERTY_CHANNEL = "channel";
     public static final String PULSAR_PROPERTY_CLIENT_ID = "clientID";
 
     // Topic names
@@ -59,13 +49,9 @@ public class PulsarClientService {
     private static final int DEFAULT_CONNECTION_TIMEOUT = 30;
     private static final int DEFAULT_OPERATION_TIMEOUT = 30;
     private static final int DEFAULT_KEEP_ALIVE = 30;
-    private static final int MAX_PRODUCER_CREATE_RETRIES = 3;
-    private static final int PRODUCER_CREATE_RETRY_DELAY_MS = 1000;
 
     //FIXME Change this to an unique subscription name
     private static final String SUBSCRIPTION_NAME = "MQTT_SERVICE_PULSAR_EXAMPLE_SUBSCRIPTION";
-
-    protected PulsarClient pulsarClient;
 
     //This map is used to manage one client per tenant
     private final HashMap<String, PulsarClient> clientMap = new HashMap<>();
@@ -75,29 +61,28 @@ public class PulsarClientService {
     private final HashMap<String, String> deviceClientIdMap = new HashMap<>();
     private final HashMap<String, Consumer> consumerMap = new HashMap<>();
 
-    @Value("${C8Y_BASEURL_PULSAR:}")
+
     @Getter
-    String mqttServicePulsarUrl;
+    private final String pulsarUrl;
 
-    @Autowired
-    C8YClient c8YClient;
+    private final C8YClient c8YClient;
 
-    @Autowired
-    MicroserviceSubscriptionsService subscriptionsService;
+    private final MicroserviceSubscriptionsService subscriptionsService;
 
-    @Bean
-    public RetryTemplate subscriptionRetryTemplate() {
-        return RetryTemplate.builder()
-                .infiniteRetry()
-                .retryOn(Throwable.class)
-                .fixedBackoff(5000)
-                .build();
-    }
+    private final RetryTemplate subscriptionRetryTemplate;
 
-    @Bean("virtualThreadPool")
-    public ExecutorService virtualThreadPool() {
-        final ThreadFactory factory = Thread.ofVirtual().name("virtThread-", 0).factory();
-        return Executors.newThreadPerTaskExecutor(factory);
+    private final ExecutorService virtualThreadPool;
+
+    public PulsarClientService(@Value("${C8Y_BASEURL_PULSAR:}") String pulsarUrl,
+                               C8YClient c8YClient,
+                               MicroserviceSubscriptionsService subscriptionsService,
+                               RetryTemplate subscriptionRetryTemplate,
+                               @Named("virtualThreadPool") ExecutorService virtualThreadPool) {
+        this.pulsarUrl = pulsarUrl;
+        this.c8YClient = c8YClient;
+        this.subscriptionsService = subscriptionsService;
+        this.subscriptionRetryTemplate = subscriptionRetryTemplate;
+        this.virtualThreadPool = virtualThreadPool;
     }
 
     /* Will be executed each time a tenant is subscribed and on microservice start */
@@ -109,9 +94,9 @@ public class PulsarClientService {
             //Step 1: Initialize Pulsar Client per tenant
             initializePulsarClientForTenant(tenant, event.getCredentials());
             //Step 2: Create a consumer and subscribe to pulsar
-            subscriptionRetryTemplate().execute(context -> {
-               if(context.getRetryCount() > 0)
-                   log.info("{} - Retrying to subscribe to Puslar...", tenant);
+            subscriptionRetryTemplate.execute(context -> {
+                if (context.getRetryCount() > 0)
+                    log.info("{} - Retrying to subscribe to Puslar...", tenant);
                 createConsumer(tenant, SUBSCRIPTION_NAME, clientMap.get(tenant), callbackMap.get(tenant));
                 return null;
             });
@@ -121,6 +106,7 @@ public class PulsarClientService {
         }
 
     }
+
     /* Will be called when microservice is shutdown for any reasons */
     @PreDestroy
     public void disconnect() {
@@ -153,25 +139,26 @@ public class PulsarClientService {
 
     public void initializePulsarClientForTenant(String tenant, MicroserviceCredentials credentials) throws PulsarClientException {
         //Retrieve service user credentials on microservice subscription
-        String authParams = MessageFormat.format(
-                "'{'\"userId\":\"{0}/{1}\",\"password\":\"{2}\"'}'",
-                tenant, credentials.getUsername(), credentials.getPassword());
         final AuthenticationBasic basicAuth = new AuthenticationBasic();
-        basicAuth.configure(authParams);
+        basicAuth.configure(Map.of(
+                "userId", "%s/%s".formatted(tenant, credentials.getUsername()),
+                "password", credentials.getPassword()
+        ));
 
         // Create a Pulsar client using the basic authentication credentials.
         // The client will *not* try to connect and authenticate immediately.
         final PulsarClient client = PulsarClient.builder()
-                .serviceUrl(mqttServicePulsarUrl)
+                .serviceUrl(pulsarUrl)
                 .authentication(basicAuth)
                 .connectionTimeout(DEFAULT_CONNECTION_TIMEOUT, TimeUnit.SECONDS)
                 .operationTimeout(DEFAULT_OPERATION_TIMEOUT, TimeUnit.SECONDS)
                 .keepAliveInterval(DEFAULT_KEEP_ALIVE, TimeUnit.SECONDS)
                 .build();
         clientMap.put(tenant, client);
-        PulsarCallback callback = new PulsarCallback(tenant, virtualThreadPool(), this);
+        PulsarCallback callback = new PulsarCallback(tenant, virtualThreadPool, this);
         callbackMap.put(tenant, callback);
     }
+
     public Consumer<byte[]> createConsumer(String tenant, String subscriptionName, PulsarClient client, PulsarCallback callback) throws PulsarClientException {
         log.info("{} - Creating and subscribing consumer to Pulsar ...", tenant);
         String fromDevice = String.format("persistent://%s/%s/%s",
@@ -179,8 +166,9 @@ public class PulsarClientService {
         final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
                 .topic(fromDevice)
                 .subscriptionName(subscriptionName)
-                .autoUpdatePartitions(false)
                 .messageListener(callback)
+                //worth adding so in case of update we won't be blocked by Exclusive consumer exception when new instance will start and the old one is still running
+                .subscriptionType(SubscriptionType.Failover)
                 .subscribe();
         log.info("{} - Subscription to Pulsar successful!", tenant);
         consumerMap.put(tenant, consumer);
@@ -192,7 +180,7 @@ public class PulsarClientService {
                 tenant, PULSAR_NAMESPACE, PULSAR_TO_DEVICE_TOPIC);
         final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
                 .topic(toDevice)
-                .autoUpdatePartitions(false)
+                .sendTimeout(DEFAULT_OPERATION_TIMEOUT, TimeUnit.SECONDS)
                 .create();
         return producer;
     }
@@ -209,7 +197,7 @@ public class PulsarClientService {
         //This is the raw-message as byte-array
         String payload = new String(msg.getData(), StandardCharsets.UTF_8);
         try {
-            if(topic.equals("device/sim/message")) {
+            if (topic.equals("device/sim/message")) {
                 log.info("{} - Message {} is flagged as to be processed", tenant, msg.getMessageId());
                 //Step 2: Transform message(s) to target format
                 //Step 3: Send message to target API(s)
@@ -218,22 +206,20 @@ public class PulsarClientService {
                     //Step 4: Acknowledge message after successful processing
                     log.info("{} - Processing of message {} successful!", tenant, msg.getMessageId());
                     consumer.acknowledge(msg);
-                } catch (Exception e) {
+                } catch (SDKException e) {
                     log.error("{} - Error transforming and sending message", tenant, e);
-                    consumer.negativeAcknowledge(msg);
+                    //For temporary errors like 5xx we should negative ack for a potential retry
+                    if (e.getHttpStatus() >= 500) {
+                        consumer.negativeAcknowledge(msg);
+                    }
                 }
             } else {
                 //Acknowledge all other messages but ignore them for processing
                 log.info("{} - Message {} will be ignored for processing ", tenant, msg.getMessageId());
                 consumer.acknowledge(msg);
             }
-
-        } catch (SDKException e) {
-            log.error("{} - Error processing message in Cumulocity: ",tenant, e);
-            consumer.negativeAcknowledge(msg);
-        }
-        catch (PulsarClientException e) {
-            log.error("{} - Error acking message: ",tenant, e);
+        } catch (PulsarClientException e) {
+            log.error("{} - Error acking message: ", tenant, e);
         }
     }
 
@@ -258,7 +244,7 @@ public class PulsarClientService {
             String type = "c8y_TemperatureMeasurement";
             String name = "c8y_TemperatureMeasurement";
             String extIdType = "c8y_Serial";
-            if(jsonObject.has("temperature")) {
+            if (jsonObject.has("temperature")) {
                 JsonObject temperatureObject = jsonObject.get("temperature").getAsJsonObject();
                 unit = temperatureObject.get("unit").getAsString();
                 value = temperatureObject.get("value").getAsBigDecimal();
@@ -266,20 +252,20 @@ public class PulsarClientService {
                 unit = null;
                 value = null;
             }
-            if(jsonObject.has("time")) {
+            if (jsonObject.has("time")) {
                 time = DateTime.parse(jsonObject.get("time").getAsString());
             } else {
                 time = DateTime.now();
             }
             //In this case the deviceId is part of the payload so we use it here - otherwise we use the clientId
-            if(jsonObject.has("deviceId")) {
+            if (jsonObject.has("deviceId")) {
                 deviceId = jsonObject.get("deviceId").getAsString();
                 deviceClientIdMap.put(deviceId, clientId);
             } else {
                 deviceId = clientId;
             }
             //Validation
-            if(value == null) {
+            if (value == null) {
                 log.error("{} - Measurement validation failed, no value provided!", tenant);
                 return;
             }
@@ -287,18 +273,14 @@ public class PulsarClientService {
             subscriptionsService.runForTenant(tenant, () -> {
                 ExternalIDRepresentation extId = c8YClient.retrieveExternalId(tenant, extIdType, deviceId);
                 ManagedObjectRepresentation mor;
-                if(extId == null) {
+                if (extId == null) {
                     log.info("{} - Device with id {} does not exists, creating it", tenant, deviceId);
-                    mor = c8YClient.createDevice(tenant,"MQTT Service Example Device "+deviceId, deviceId, "c8y_MQTTServiceExampleDevice", extIdType);
-                    if(mor == null)
-                        throw new RuntimeException("Error creating device");
+                    mor = c8YClient.createDevice(tenant, "MQTT Service Example Device " + deviceId, deviceId, "c8y_MQTTServiceExampleDevice", extIdType);
                 } else {
                     log.info("{} - Device with id {} already exists", tenant, deviceId);
                     mor = extId.getManagedObject();
                 }
-                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor,  name, type, time, value, unit);
-                if(measurement == null)
-                    throw new RuntimeException("Error creating measurement");
+                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor, name, type, time, value, unit);
             });
 
         }

@@ -1,25 +1,22 @@
 package c8y.example.mqttservice.callback;
 
 import c8y.example.mqttservice.service.PulsarClientService;
-import com.cumulocity.sdk.client.SDKException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.api.MessageListener;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
-public class PulsarCallback implements MessageListener<byte[]>
-{
+@RequiredArgsConstructor
+public class PulsarCallback implements MessageListener<byte[]> {
+
     private final String tenant;
     private final ExecutorService virtualThreadPool;
-    private PulsarClientService pulsarClientService;
-
-    public PulsarCallback(String tenant, ExecutorService virtualThreadPool, PulsarClientService pulsarService) {
-        this.tenant = tenant;
-        this.virtualThreadPool = virtualThreadPool;
-        this.pulsarClientService = pulsarService;
-    }
+    private final PulsarClientService pulsarClientService;
 
     @Override
     public void received(Consumer<byte[]> consumer, Message<byte[]> msg) {
@@ -40,8 +37,4 @@ public class PulsarCallback implements MessageListener<byte[]>
         });
     }
 
-    @Override
-    public void reachedEndOfTopic(Consumer<byte[]> consumer) {
-        MessageListener.super.reachedEndOfTopic(consumer);
-    }
 }

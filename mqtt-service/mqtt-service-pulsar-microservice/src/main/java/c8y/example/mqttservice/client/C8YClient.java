@@ -1,7 +1,6 @@
 package c8y.example.mqttservice.client;
 
 import c8y.IsDevice;
-import com.cumulocity.microservice.subscription.service.MicroserviceSubscriptionsService;
 import com.cumulocity.model.Agent;
 import com.cumulocity.model.ID;
 import com.cumulocity.model.measurement.MeasurementValue;
@@ -12,6 +11,7 @@ import com.cumulocity.sdk.client.SDKException;
 import com.cumulocity.sdk.client.identity.IdentityApi;
 import com.cumulocity.sdk.client.inventory.InventoryApi;
 import com.cumulocity.sdk.client.measurement.MeasurementApi;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +22,14 @@ import java.util.HashMap;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class C8YClient {
 
-    @Autowired
-    MicroserviceSubscriptionsService subscriptionsService;
+    private final InventoryApi inventoryApi;
 
-    @Autowired
-    InventoryApi inventoryApi;
+    private final IdentityApi identityApi;
 
-    @Autowired
-    IdentityApi identityApi;
-
-    @Autowired
-    MeasurementApi measurementApi;
+    private final MeasurementApi measurementApi;
 
     //FIXME: This method should use a Cache instead of calling on every message retrieved the API
     public ExternalIDRepresentation retrieveExternalId(String tenant, String type, String externalId) {
@@ -65,40 +60,42 @@ public class C8YClient {
             mor = inventoryApi.create(mor);
             log.info("{} - New device created: {}", tenant, mor);
             ExternalIDRepresentation extId = new ExternalIDRepresentation();
-            if(extIdType != null)
+            if (extIdType != null) {
                 extId.setType(type);
-            else
+            } else {
                 extId.setType("c8y_Serial");
+            }
             extId.setExternalId(deviceId);
             extId.setManagedObject(mor);
             identityApi.create(extId);
             return mor;
         } catch (SDKException e) {
             log.error("{} - Error when creating device with ID {}", tenant, deviceId, e);
+            throw e;
         }
-        return null;
     }
 
-    public MeasurementRepresentation createSimpleMeasurement(String tenant, ManagedObjectRepresentation mor, String name, String type, DateTime time, BigDecimal value, String unit) {
+    public MeasurementRepresentation createSimpleMeasurement(String tenant, ManagedObjectRepresentation mor, String name, String type, DateTime time, BigDecimal value, String unit) throws SDKException {
         MeasurementRepresentation measurementRepresentation = new MeasurementRepresentation();
+        measurementRepresentation.setType(type);
+        measurementRepresentation.setDateTime(time);
+        measurementRepresentation.setSource(mor);
+        MeasurementValue measurementValue = new MeasurementValue();
+        HashMap<String, MeasurementValue> series = new HashMap<>();
+        measurementValue.setValue(value);
+        if (unit != null) {
+            measurementValue.setUnit(unit);
+        }
+        series.put("T", measurementValue);
+        measurementRepresentation.set(series, name);
         try {
-            measurementRepresentation.setType(type);
-            measurementRepresentation.setDateTime(time);
-            measurementRepresentation.setSource(mor);
-            MeasurementValue measurementValue = new MeasurementValue();
-            HashMap<String, MeasurementValue> series = new HashMap<>();
-            measurementValue.setValue(value);
-
-            if (unit != null)
-                measurementValue.setUnit(unit);
-            series.put("T", measurementValue);
-            measurementRepresentation.set(series, name);
             log.info("{} - Creating Measurement {}", tenant, measurementRepresentation.toJSON());
             return measurementApi.create(measurementRepresentation);
         } catch (SDKException e) {
-            log.error("{} - Error when creating measurement {}", tenant, measurementRepresentation.toJSON());
+            log.error("{} - Error when creating measurement {}", tenant, measurementRepresentation, e);
+            throw e;
         }
-        return null;
+
     }
 
 }
