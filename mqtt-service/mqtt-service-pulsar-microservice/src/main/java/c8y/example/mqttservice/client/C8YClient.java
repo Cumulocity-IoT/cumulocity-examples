@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -60,11 +61,7 @@ public class C8YClient {
             mor = inventoryApi.create(mor);
             log.info("{} - New device created: {}", tenant, mor);
             ExternalIDRepresentation extId = new ExternalIDRepresentation();
-            if (extIdType != null) {
-                extId.setType(type);
-            } else {
-                extId.setType("c8y_Serial");
-            }
+            extId.setType(Objects.requireNonNullElse(extIdType, "c8y_Serial"));
             extId.setExternalId(deviceId);
             extId.setManagedObject(mor);
             identityApi.create(extId);
