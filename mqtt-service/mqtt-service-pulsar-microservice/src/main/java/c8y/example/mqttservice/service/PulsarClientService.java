@@ -169,6 +169,7 @@ public class PulsarClientService {
                 .messageListener(callback)
                 //worth adding so in case of update we won't be blocked by Exclusive consumer exception when new instance will start and the old one is still running
                 .subscriptionType(SubscriptionType.Failover)
+                .autoUpdatePartitions(false)
                 .subscribe();
         log.info("{} - Subscription to Pulsar successful!", tenant);
         consumerMap.put(tenant, consumer);
