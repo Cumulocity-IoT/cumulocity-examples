@@ -22,6 +22,7 @@
 
     <c8y.version>${project.version}</c8y.version>
     <spring-boot.version>3.5.5</spring-boot.version>
+    <bouncycastle.version>1.83</bouncycastle.version>
   </properties>
 
   <profiles>
@@ -107,6 +108,7 @@
         <version>${c8y.version}</version>
       </dependency>
     </dependencies>
+
   </dependencyManagement>
 
   <build>
