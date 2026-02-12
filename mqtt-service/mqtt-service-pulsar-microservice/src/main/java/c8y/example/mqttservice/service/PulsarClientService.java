@@ -134,7 +134,6 @@ public class PulsarClientService {
         } catch (PulsarClientException e) {
             log.error("{} - Error shutting down pulsar clients", tenant, e);
         }
-
     }
 
     public void initializePulsarClientForTenant(String tenant, MicroserviceCredentials credentials) throws PulsarClientException {
@@ -187,43 +186,7 @@ public class PulsarClientService {
         return producer;
     }
 
-    public void processMessage(String tenant, Consumer<byte[]> consumer, Message<byte[]> msg) {
-        /* Step 1: Filter the message  */
-        //Filter on topic level but filter could also be implemented on payload or client ID level
-        //This is in most cases "from-device" when the message was originated by a device
-        String internalMQTTTServiceTopic = msg.getTopicName();
-        //This is the MQTT Topic used by the device and provided as message property
-        String topic = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_TOPIC);
-        //This is the clientID who originally sent the message
-        String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
-        //This is the raw-message as byte-array
-        String payload = new String(msg.getData(), StandardCharsets.UTF_8);
-        try {
-            if (topic.equals("device/sim/message")) {
-                log.info("{} - Message {} is flagged as to be processed", tenant, msg.getMessageId());
-                //Step 2: Transform message(s) to target format
-                //Step 3: Send message to target API(s)
-                try {
-                    transformAndSendMessage(tenant, msg, client);
-                    //Step 4: Acknowledge message after successful processing
-                    log.info("{} - Processing of message {} successful!", tenant, msg.getMessageId());
-                    consumer.acknowledge(msg);
-                } catch (SDKException e) {
-                    log.error("{} - Error transforming and sending message", tenant, e);
-                    //For temporary errors like 5xx we should negative ack for a potential retry
-                    if (e.getHttpStatus() >= 500) {
-                        consumer.negativeAcknowledge(msg);
-                    }
-                }
-            } else {
-                //Acknowledge all other messages but ignore them for processing
-                log.info("{} - Message {} will be ignored for processing ", tenant, msg.getMessageId());
-                consumer.acknowledge(msg);
-            }
-        } catch (PulsarClientException e) {
-            log.error("{} - Error acking message: ", tenant, e);
-        }
-    }
+
 
     public void transformAndSendMessage(String tenant, Message<byte[]> msg, String clientId) throws SDKException {
         //Here we assume we just receive JSON Format and Objects in the following format:
