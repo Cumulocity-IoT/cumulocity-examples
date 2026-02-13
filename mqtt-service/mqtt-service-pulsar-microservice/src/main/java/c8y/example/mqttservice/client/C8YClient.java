@@ -18,8 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -32,13 +31,33 @@ public class C8YClient {
 
     private final MeasurementApi measurementApi;
 
-    //FIXME: This method should use a Cache instead of calling on every message retrieved the API
+    private static final int IDENTITY_CACHE_SIZE = 1000;
+
+    private final Map<ID, ExternalIDRepresentation> externalIdCache = Collections.synchronizedMap(new LinkedHashMap<ID, ExternalIDRepresentation>() {
+        //Removing oldest entries
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<ID, ExternalIDRepresentation> eldest) {
+            return size() > IDENTITY_CACHE_SIZE;
+        }
+    });
+
+    //FIXME: Proper Handling of updating Cache when External IDs are updated/deleted in Cumulocity, currently not handled, can lead to stale data in cache
     public ExternalIDRepresentation retrieveExternalId(String tenant, String type, String externalId) {
         try {
             ID id = new ID();
             id.setType(type);
             id.setValue(externalId);
-            return identityApi.getExternalId(id);
+            //Step 1: Check Cache to retrieve External ID
+            if(externalIdCache.get(id) != null) {
+                log.info("{} - External ID found in cache of type {} and value {}", tenant, type, externalId);
+                return externalIdCache.get(id);
+            } else {
+                //Step 2: Cache miss, call API
+                log.info("{} - External ID not found in cache of type {} and value {}, calling API", tenant, type, externalId);
+                ExternalIDRepresentation extId = identityApi.getExternalId(id);
+                externalIdCache.put(id, extId);
+                return extId;
+            }
         } catch (SDKException e) {
             log.info("{} - External ID could not be found of type {} and value {}", tenant, type, externalId);
         }
@@ -64,7 +83,12 @@ public class C8YClient {
             extId.setType(Objects.requireNonNullElse(extIdType, "c8y_Serial"));
             extId.setExternalId(deviceId);
             extId.setManagedObject(mor);
-            identityApi.create(extId);
+            extId = identityApi.create(extId);
+            ID id = new ID();
+            id.setType(extId.getType());
+            id.setValue(extId.getExternalId());
+            //Adding External ID to Cache
+            externalIdCache.put(id, extId);
             return mor;
         } catch (SDKException e) {
             log.error("{} - Error when creating device with ID {}", tenant, deviceId, e);
