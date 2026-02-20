@@ -21,7 +21,7 @@ public class PulsarCallback implements MessageListener<byte[]> {
     @Override
     public void received(Consumer<byte[]> consumer, Message<byte[]> msg) {
         //This is in most cases "from-device" when the message was originated by a device
-        String internalMQTTTServiceTopic = msg.getTopicName();
+        String internalMQTTServiceTopic = msg.getTopicName();
         //This is the MQTT Topic used by the device and provided as message property
         String topic = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_TOPIC);
         //This is the clientID who originally sent the message
