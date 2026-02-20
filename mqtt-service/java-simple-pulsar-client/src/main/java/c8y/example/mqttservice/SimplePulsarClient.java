@@ -1,16 +1,13 @@
 package c8y.example.mqttservice;
 
-import java.text.MessageFormat;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.pulsar.client.api.Consumer;
-import org.apache.pulsar.client.api.Message;
-import org.apache.pulsar.client.api.MessageListener;
-import org.apache.pulsar.client.api.Producer;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
-import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.impl.auth.AuthenticationBasic;
+
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.time.Instant;
+
+import static java.time.ZoneOffset.UTC;
 
 public class SimplePulsarClient {
     public static void main(String[] args) throws Exception {
@@ -35,9 +32,9 @@ public class SimplePulsarClient {
         // Create a Pulsar client using the basic authentication credentials.
         // The client will *not* try to connect and authenticate immediately.
         final PulsarClient client = PulsarClient.builder()
-            .serviceUrl(pulsarUrl)
-            .authentication(basicAuth)
-            .build();
+                .serviceUrl(pulsarUrl)
+                .authentication(basicAuth)
+                .build();
         System.out.println("Created Pulsar client");
 
         // Create a simple message listener that will log some details of
@@ -47,7 +44,10 @@ public class SimplePulsarClient {
             public void received(Consumer<byte[]> consumer, Message<byte[]> message) {
                 final String clientId = message.getProperty("clientID");
                 final String topic = message.getProperty("topic");
-                final long eventTime = message.getEventTime();
+                final String eventTime = Instant.ofEpochMilli(message.getEventTime())
+                        .atOffset(UTC)
+                        .toString();
+
                 System.out.println(MessageFormat.format("Received message from MQTT device {0} on MQTT topic {1}", clientId, topic));
                 System.out.println(MessageFormat.format("MQTT PUBLISH arrival timestamp: {0}", eventTime));
                 System.out.println(MessageFormat.format("Message payload: {0}", new String(message.getValue(), StandardCharsets.UTF_8)));
@@ -65,10 +65,10 @@ public class SimplePulsarClient {
         // using the listener defined above to process each message.
         // This will trigger connection and authentication by the client.
         final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
-            .topic(MessageFormat.format("persistent://{0}/mqtt/from-device", tenantID))
-            .subscriptionName("demoSubscription")
-            .messageListener(listener)
-            .subscribe();
+                .topic(MessageFormat.format("persistent://{0}/mqtt/from-device", tenantID))
+                .subscriptionName("demoSubscription")
+                .messageListener(listener)
+                .subscribe();
         System.out.println("Created Pulsar consumer");
 
         // Wrap all the operations that might fail after we create the
@@ -77,26 +77,26 @@ public class SimplePulsarClient {
         try {
             // Create a Pulsar producer on the to-device topic for the tenant.
             final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
-                .topic(MessageFormat.format("persistent://{0}/mqtt/to-device", tenantID))
-                .create();
+                    .topic(MessageFormat.format("persistent://{0}/mqtt/to-device", tenantID))
+                    .create();
             System.out.println("Created Pulsar producer");
 
             // Publish a message to a single MQTT device.
             producer.newMessage()
-                .property("clientID", "demoClient")
-                .property("topic", "demoTopicB")
-                .key("demoClient")
-                .value("Message sent to a single device".getBytes(StandardCharsets.UTF_8))
-                .send();
+                    .property("clientID", "demoClient")
+                    .property("topic", "demoTopicB")
+                    .key("demoClient")
+                    .value("Message sent to a single device".getBytes(StandardCharsets.UTF_8))
+                    .send();
             System.out.println("Sent message to single device");
 
             // Publish a message to all MQTT devices subscribed to a topic.
             // Note that the "clientID" property is omitted here.
             producer.newMessage()
-                .property("topic", "demoTopicB")
-                .key("demoTopicB")
-                .value("Message sent to all subscribed devices".getBytes(StandardCharsets.UTF_8))
-                .send();
+                    .property("topic", "demoTopicB")
+                    .key("demoTopicB")
+                    .value("Message sent to all subscribed devices".getBytes(StandardCharsets.UTF_8))
+                    .send();
             System.out.println("Sent message to all subscribed devices");
 
             // Pause for a minute to allow some test messages to be consumed.
@@ -104,8 +104,7 @@ public class SimplePulsarClient {
 
             // Close the producer.
             producer.close();
-        }
-        finally {
+        } finally {
             // Delete the durable subscription.
             // This is only necessary if messages should *not* be retained
             // on the topic while the client is disconnected.
