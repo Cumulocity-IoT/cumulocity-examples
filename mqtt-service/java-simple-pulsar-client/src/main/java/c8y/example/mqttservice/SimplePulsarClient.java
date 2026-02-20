@@ -47,7 +47,9 @@ public class SimplePulsarClient {
             public void received(Consumer<byte[]> consumer, Message<byte[]> message) {
                 final String clientId = message.getProperty("clientID");
                 final String topic = message.getProperty("topic");
+                final long eventTime = message.getEventTime();
                 System.out.println(MessageFormat.format("Received message from MQTT device {0} on MQTT topic {1}", clientId, topic));
+                System.out.println(MessageFormat.format("MQTT PUBLISH arrival timestamp: {0}", eventTime));
                 System.out.println(MessageFormat.format("Message payload: {0}", new String(message.getValue(), StandardCharsets.UTF_8)));
                 System.out.println(MessageFormat.format("Message properties: {0}", message.getProperties()));
                 try {
