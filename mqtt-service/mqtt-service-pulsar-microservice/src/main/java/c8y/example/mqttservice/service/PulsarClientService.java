@@ -191,7 +191,7 @@ public class PulsarClientService {
         /* Step 1: Filter the message  */
         //Filter on topic level but filter could also be implemented on payload or client ID level
         //This is in most cases "from-device" when the message was originated by a device
-        String internalMQTTTServiceTopic = msg.getTopicName();
+        String internalMQTTServiceTopic = msg.getTopicName();
         //This is the MQTT Topic used by the device and provided as message property
         String topic = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_TOPIC);
         //This is the clientID who originally sent the message
