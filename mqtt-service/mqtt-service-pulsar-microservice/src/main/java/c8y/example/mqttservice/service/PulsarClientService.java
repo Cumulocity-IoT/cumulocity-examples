@@ -26,9 +26,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +44,7 @@ public class PulsarClientService {
     public static final String PULSAR_TO_DEVICE_TOPIC = "to-device";
     public static final String PULSAR_FROM_DEVICE_TOPIC = "from-device";
     public static final String PULSAR_NAMESPACE = "mqtt";
+    public static final String TOPIC_FORMAT = "persistent://%s/%s/%s";
 
     //Default configuration
     private static final int DEFAULT_CONNECTION_TIMEOUT = 30;
@@ -54,12 +55,15 @@ public class PulsarClientService {
     private static final String SUBSCRIPTION_NAME = "MQTT_SERVICE_PULSAR_EXAMPLE_SUBSCRIPTION";
 
     //This map is used to manage one client per tenant
-    private final HashMap<String, PulsarClient> clientMap = new HashMap<>();
+    private final Map<String, PulsarClient> clientMap = new ConcurrentHashMap<>();
     //This map is used to manage one callback per tenant
-    private final HashMap<String, PulsarCallback> callbackMap = new HashMap<>();
+    private final Map<String, PulsarCallback> callbackMap = new ConcurrentHashMap<>();
     //This map is used to correlate device IDs to clientIDs
-    private final HashMap<String, String> deviceClientIdMap = new HashMap<>();
-    private final HashMap<String, Consumer> consumerMap = new HashMap<>();
+    private final Map<String, String> deviceClientIdMap = new ConcurrentHashMap<>();
+    //This map is used to manage one consumer per tenant
+    private final Map<String, Consumer<byte[]>> consumerMap = new ConcurrentHashMap<>();
+    //This map is used to manage one producer per tenant
+    private final Map<String, Producer<byte[]>> producerMap = new ConcurrentHashMap<>();
 
 
     @Getter
@@ -123,16 +127,38 @@ public class PulsarClientService {
     public void removeTenant(MicroserviceSubscriptionRemovedEvent event) {
         String tenant = event.getTenant();
         try {
-            PulsarClient client = clientMap.get(tenant);
-            Consumer consumer = consumerMap.get(tenant);
-            //Calling unsubscribe will make sure that no further messages are retained on the broker for this microservice
-            consumer.unsubscribe();
-            client.close();
-            clientMap.remove(tenant);
-            consumerMap.remove(tenant);
+            // Safely close all resources in reverse order of creation
+            Optional.ofNullable(consumerMap.remove(tenant))
+                    .ifPresent(consumer -> {
+                        try {
+                            consumer.unsubscribe();
+                        } catch (PulsarClientException e) {
+                            log.warn("{} - Error unsubscribing consumer", tenant, e);
+                        }
+                    });
+
+            Optional.ofNullable(producerMap.remove(tenant))
+                    .ifPresent(producer -> {
+                        try {
+                            producer.close();
+                        } catch (PulsarClientException e) {
+                            log.warn("{} - Error closing producer", tenant, e);
+                        }
+                    });
+
+            Optional.ofNullable(clientMap.remove(tenant))
+                    .ifPresent(client -> {
+                        try {
+                            client.close();
+                        } catch (PulsarClientException e) {
+                            log.error("{} - Error closing Pulsar client", tenant, e);
+                        }
+                    });
+
             callbackMap.remove(tenant);
-        } catch (PulsarClientException e) {
-            log.error("{} - Error shutting down pulsar clients", tenant, e);
+            log.info("{} - Tenant resources cleaned up successfully", tenant);
+        } catch (Exception e) {
+            log.error("{} - Unexpected error during tenant removal", tenant, e);
         }
     }
 
@@ -160,8 +186,7 @@ public class PulsarClientService {
 
     public Consumer<byte[]> createConsumer(String tenant, String subscriptionName, PulsarClient client, PulsarCallback callback) throws PulsarClientException {
         log.info("{} - Creating and subscribing consumer to Pulsar ...", tenant);
-        String fromDevice = String.format("persistent://%s/%s/%s",
-                tenant, PULSAR_NAMESPACE, PULSAR_FROM_DEVICE_TOPIC);
+        String fromDevice = String.format(TOPIC_FORMAT, tenant, PULSAR_NAMESPACE, PULSAR_FROM_DEVICE_TOPIC);
         final Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
                 .topic(fromDevice)
                 .subscriptionName(subscriptionName)
@@ -175,55 +200,55 @@ public class PulsarClientService {
         return consumer;
     }
 
-    public Producer<byte[]> createProducer(String tenant, PulsarClient client, PulsarCallback callback) throws PulsarClientException {
-        String toDevice = String.format("persistent://%s/%s/%s",
-                tenant, PULSAR_NAMESPACE, PULSAR_TO_DEVICE_TOPIC);
-        final Producer<byte[]> producer = client.newProducer(Schema.BYTES)
-                .topic(toDevice)
-                .sendTimeout(DEFAULT_OPERATION_TIMEOUT, TimeUnit.SECONDS)
-                .autoUpdatePartitions(false)
-                .create();
-        return producer;
+    public Producer<byte[]> createProducer(String tenant, PulsarClient client) throws PulsarClientException {
+        // Return cached producer if available
+        return producerMap.computeIfAbsent(tenant, k -> {
+            try {
+                String toDevice = String.format(TOPIC_FORMAT, tenant, PULSAR_NAMESPACE, PULSAR_TO_DEVICE_TOPIC);
+                return client.newProducer(Schema.BYTES)
+                        .topic(toDevice)
+                        .sendTimeout(DEFAULT_OPERATION_TIMEOUT, TimeUnit.SECONDS)
+                        .autoUpdatePartitions(false)
+                        .create();
+            } catch (PulsarClientException e) {
+                log.error("{} - Error creating producer", tenant, e);
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 
     public void processMessage(String tenant, Consumer<byte[]> consumer, Message<byte[]> msg) {
         /* Step 1: Filter the message  */
-        //Filter on topic level but filter could also be implemented on payload or client ID level
-        //This is in most cases "from-device" when the message was originated by a device
-        String internalMQTTServiceTopic = msg.getTopicName();
-        //This is the MQTT Topic used by the device and provided as message property
         String topic = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_TOPIC);
-        //This is the clientID who originally sent the message
         String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
-        //This is the raw-message as byte-array
-        String payload = new String(msg.getData(), StandardCharsets.UTF_8);
+
         try {
-            if (topic.equals("device/sim/message")) {
-                log.info("{} - Message {} is flagged as to be processed", tenant, msg.getMessageId());
-                //Step 2: Transform message(s) to target format
-                //Step 3: Send message to target API(s)
-                try {
-                    transformAndSendMessage(tenant, msg, client);
-                    //Step 4: Acknowledge message after successful processing
-                    log.info("{} - Processing of message {} successful!", tenant, msg.getMessageId());
-                    consumer.acknowledge(msg);
-                } catch (SDKException e) {
-                    log.error("{} - Error transforming and sending message", tenant, e);
-                    //For temporary errors like 5xx we should negative ack for a potential retry
-                    if (e.getHttpStatus() >= 500) {
-                        consumer.negativeAcknowledge(msg);
-                    } else {
-                        consumer.acknowledge(msg);
-                    }
-                }
-            } else {
-                //Acknowledge all other messages but ignore them for processing
-                log.info("{} - Message {} will be ignored for processing ", tenant, msg.getMessageId());
+            if (!"device/sim/message".equals(topic)) {
+                log.info("{} - Message {} will be ignored for processing", tenant, msg.getMessageId());
                 consumer.acknowledge(msg);
+                return;
+            }
+
+            log.debug("{} - Message {} is flagged as to be processed", tenant, msg.getMessageId());
+            //Step 2: Transform message(s) to target format
+            //Step 3: Send message to target API(s)
+            try {
+                transformAndSendMessage(tenant, msg, client);
+                //Step 4: Acknowledge message after successful processing
+                log.info("{} - Processing of message {} successful!", tenant, msg.getMessageId());
+                consumer.acknowledge(msg);
+            } catch (SDKException e) {
+                log.error("{} - Error transforming and sending message", tenant, e);
+                //For temporary errors like 5xx we should negative ack for a potential retry
+                if (e.getHttpStatus() >= 500) {
+                    consumer.negativeAcknowledge(msg);
+                } else {
+                    consumer.acknowledge(msg);
+                }
             }
         } catch (PulsarClientException e) {
-            log.error("{} - Error acking message: ", tenant, e);
+            log.error("{} - Error acking message", tenant, e);
         }
     }
 
@@ -238,55 +263,67 @@ public class PulsarClientService {
          "time": "2026-01-13T12:00:00.000Z",
          "deviceId": "dev4711"
          }
-         **/
-        if (msg.getData() != null) {
-            JsonObject jsonObject = JsonParser.parseString(new String(msg.getData())).getAsJsonObject();
-            String unit;
-            BigDecimal value;
-            DateTime time;
-            String deviceId;
+         */
+        if (msg.getData() == null || msg.getData().length == 0) {
+            log.error("{} - Measurement validation failed, no data provided!", tenant);
+            return;
+        }
+
+        try {
+            JsonObject jsonObject = JsonParser.parseString(new String(msg.getData(), StandardCharsets.UTF_8)).getAsJsonObject();
             String type = "c8y_TemperatureMeasurement";
             String name = "c8y_TemperatureMeasurement";
             String extIdType = "c8y_Serial";
+            // Extract temperature data with null-safe defaults
+            String unit = null;
+            BigDecimal value = null;
             if (jsonObject.has("temperature")) {
-                JsonObject temperatureObject = jsonObject.get("temperature").getAsJsonObject();
-                unit = temperatureObject.get("unit").getAsString();
-                value = temperatureObject.get("value").getAsBigDecimal();
-            } else {
-                unit = null;
-                value = null;
+                JsonObject temperatureObject = jsonObject.getAsJsonObject("temperature");
+                if (temperatureObject.has("unit")) {
+                    unit = temperatureObject.get("unit").getAsString();
+                }
+                if (temperatureObject.has("value")) {
+                    value = temperatureObject.get("value").getAsBigDecimal();
+                }
             }
-            if (jsonObject.has("time")) {
-                time = DateTime.parse(jsonObject.get("time").getAsString());
-            } else {
-                time = DateTime.now();
-            }
-            //In this case the deviceId is part of the payload so we use it here - otherwise we use the clientId
-            if (jsonObject.has("deviceId")) {
-                deviceId = jsonObject.get("deviceId").getAsString();
-                deviceClientIdMap.put(deviceId, clientId);
-            } else {
-                deviceId = clientId;
-            }
-            //Validation
+
+            // Validation - check early for invalid data
             if (value == null) {
                 log.error("{} - Measurement validation failed, no value provided!", tenant);
                 return;
             }
 
+            // Extract time or use current time
+            DateTime time = jsonObject.has("time") ?
+                DateTime.parse(jsonObject.get("time").getAsString()) :
+                DateTime.now();
+
+            // Extract device ID or use client ID
+            String deviceId = jsonObject.has("deviceId") ?
+                jsonObject.get("deviceId").getAsString() :
+                clientId;
+            deviceClientIdMap.put(deviceId, clientId);
+
+            // Use effectively final variables for lambda
+            final String finalUnit = unit;
+            final BigDecimal finalValue = value;
+            final DateTime finalTime = time;
+
             subscriptionsService.runForTenant(tenant, () -> {
                 ExternalIDRepresentation extId = c8YClient.retrieveExternalId(tenant, extIdType, deviceId);
                 ManagedObjectRepresentation mor;
                 if (extId == null) {
-                    log.info("{} - Device with id {} does not exists, creating it", tenant, deviceId);
-                    mor = c8YClient.createDevice(tenant, "MQTT Service Example Device " + deviceId, deviceId, "c8y_MQTTServiceExampleDevice", extIdType);
+                    log.info("{} - Device with id {} does not exist, creating it", tenant, deviceId);
+                    mor = c8YClient.createDevice(tenant, "MQTT Service Example Device " + deviceId, deviceId, type, extIdType);
                 } else {
                     log.info("{} - Device with id {} already exists", tenant, deviceId);
                     mor = extId.getManagedObject();
                 }
-                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor, name, type, time, value, unit);
+                MeasurementRepresentation measurement = c8YClient.createSimpleMeasurement(tenant, mor, name, type, finalTime, finalValue, finalUnit);
             });
-
+        } catch (Exception e) {
+            log.error("{} - Error parsing or processing message", tenant, e);
+            throw e;
         }
     }
 }
