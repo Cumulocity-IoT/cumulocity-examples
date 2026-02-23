@@ -224,6 +224,7 @@ public class PulsarClientService {
         String client = msg.getProperty(PulsarClientService.PULSAR_PROPERTY_CLIENT_ID);
 
         try {
+            //For topics other than "device/sim/message" we just acknowledge the message without processing, as we are only interested in messages from devices
             if (!"device/sim/message".equals(topic)) {
                 log.info("{} - Message {} will be ignored for processing", tenant, msg.getMessageId());
                 consumer.acknowledge(msg);
@@ -302,6 +303,8 @@ public class PulsarClientService {
             String deviceId = jsonObject.has("deviceId") ?
                 jsonObject.get("deviceId").getAsString() :
                 clientId;
+
+            //This map is needed for producers using device isolation and sending message to dedicated clients/devices only
             deviceClientIdMap.put(deviceId, clientId);
 
             // Use effectively final variables for lambda
