@@ -59,6 +59,7 @@ public class PulsarClientService {
     //FIXME Change this to an unique subscription name
     private static final String SUBSCRIPTION_NAME = "MQTT_SERVICE_PULSAR_EXAMPLE_SUBSCRIPTION";
 
+    //FIXME Potentially check if maps should be limited to avoid OOM
     //This map is used to manage one client per tenant
     private final Map<String, PulsarClient> clientMap =  new ConcurrentHashMap<>();
     //This map is used to manage one callback per tenant
