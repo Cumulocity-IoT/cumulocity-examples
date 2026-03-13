@@ -10,9 +10,9 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>mqtt-service-pulsar-ms</artifactId>
+    <artifactId>java-pulsar-ms</artifactId>
     <version>${revision}${changelist}</version>
-    <name>Cumulocity :: Examples :: MQTT Service :: Pulsar Microservice Example</name>
+    <name>Cumulocity :: Examples :: MQTT Service :: Java Pulsar Microservice Example</name>
 
     <licenses>
         <license>

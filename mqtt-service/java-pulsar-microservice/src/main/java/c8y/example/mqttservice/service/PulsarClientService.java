@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,15 +53,24 @@ public class PulsarClientService {
     private static final int DEFAULT_OPERATION_TIMEOUT = 30;
     private static final int DEFAULT_KEEP_ALIVE = 30;
 
+    //Default Cache Size
+    private static final int CLIENT_ID_CACHE_SIZE = 1000;
+
     //FIXME Change this to an unique subscription name
     private static final String SUBSCRIPTION_NAME = "MQTT_SERVICE_PULSAR_EXAMPLE_SUBSCRIPTION";
 
     //This map is used to manage one client per tenant
-    private final Map<String, PulsarClient> clientMap = new ConcurrentHashMap<>();
+    private final Map<String, PulsarClient> clientMap =  new ConcurrentHashMap<>();
     //This map is used to manage one callback per tenant
     private final Map<String, PulsarCallback> callbackMap = new ConcurrentHashMap<>();
     //This map is used to correlate device IDs to clientIDs
-    private final Map<String, String> deviceClientIdMap = new ConcurrentHashMap<>();
+    private final Map<String, String> deviceClientIdMap = Collections.synchronizedMap(new LinkedHashMap<String, String>() {
+        //Removing oldest entries
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+            return size() > CLIENT_ID_CACHE_SIZE;
+        }
+    });
     //This map is used to manage one consumer per tenant
     private final Map<String, Consumer<byte[]>> consumerMap = new ConcurrentHashMap<>();
     //This map is used to manage one producer per tenant
@@ -247,6 +258,10 @@ public class PulsarClientService {
                 } else {
                     consumer.acknowledge(msg);
                 }
+            } catch (Exception e) {
+                //For every other exception we ACK the message
+                log.error("{} - Generic error transforming and sending message", tenant, e);
+                consumer.acknowledge(msg);
             }
         } catch (PulsarClientException e) {
             log.error("{} - Error acking message", tenant, e);
