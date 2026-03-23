@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2026.8.0</revision>
+    <revision>2026.21.0</revision>
     <changelist>-SNAPSHOT</changelist>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,7 +21,7 @@
     <nexus.basePath>/nexus/content/repositories</nexus.basePath>
 
     <c8y.version>${project.version}</c8y.version>
-    <spring-boot.version>3.5.5</spring-boot.version>
+    <spring-boot.version>3.5.11</spring-boot.version>
     <bouncycastle.version>1.83</bouncycastle.version>
   </properties>
 

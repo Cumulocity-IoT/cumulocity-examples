@@ -10,7 +10,7 @@
     <version>${revision}${changelist}</version>
 
     <properties>
-        <revision>2026.8.0</revision>
+        <revision>2026.21.0</revision>
         <changelist>-SNAPSHOT</changelist>
 
         <java.version>17</java.version>
@@ -19,7 +19,7 @@
         <main.class>c8y.example.helloworld.HelloWorldMain</main.class>
 
         <c8y.version>${revision}${changelist}</c8y.version>
-        <spring-boot.version>3.5.5</spring-boot.version>
+        <spring-boot.version>3.5.11</spring-boot.version>
     </properties>
 
     <dependencyManagement>
