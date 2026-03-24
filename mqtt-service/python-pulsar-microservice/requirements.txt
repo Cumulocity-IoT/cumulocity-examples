@@ -1,0 +1,6 @@
+c8y-api>=1.9.0
+pulsar-client>=3.4.0
+pandas>=2.3.3
+python-dotenv>=0.9.9
+flask>=2.0.0
+waitress>=2.1.2
