@@ -58,7 +58,6 @@
     <module>hello-world-microservice</module>
     <module>mqtt-service</module>
     <module>notification2-examples</module>
-    <module>mqtt-service-examples</module>
     <module>sample-lwm2m-custom-decoder</module>
     <module>java-agent</module>
     <module>lora-codec-lansitec</module>
