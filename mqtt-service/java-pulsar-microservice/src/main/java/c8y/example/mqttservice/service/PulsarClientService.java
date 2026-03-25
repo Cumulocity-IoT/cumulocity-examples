@@ -334,6 +334,7 @@ public class PulsarClientService {
                 if (extId == null) {
                     log.info("{} - Device with id {} does not exist, creating it", tenant, deviceId);
                     mor = c8YClient.createDevice(tenant, "MQTT Service Example Device " + deviceId, deviceId, type, extIdType);
+                    extId = c8YClient.createExternalId(tenant, extIdType, deviceId, mor);
                 } else {
                     log.info("{} - Device with id {} already exists", tenant, deviceId);
                     mor = extId.getManagedObject();

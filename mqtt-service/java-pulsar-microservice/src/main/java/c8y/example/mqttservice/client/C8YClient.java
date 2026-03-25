@@ -64,6 +64,25 @@ public class C8YClient {
         return null;
     }
 
+    public ExternalIDRepresentation createExternalId(String tenant, String type, String externalId, ManagedObjectRepresentation mor) {
+        try {
+            ExternalIDRepresentation extId = new ExternalIDRepresentation();
+            extId.setType(Objects.requireNonNullElse(type, "c8y_Serial"));
+            extId.setExternalId(externalId);
+            extId.setManagedObject(mor);
+            extId = identityApi.create(extId);
+            ID id = new ID();
+            id.setType(extId.getType());
+            id.setValue(extId.getExternalId());
+            //Adding External ID to Cache
+            externalIdCache.put(id, extId);
+            return extId;
+        } catch (SDKException e) {
+            log.error("{} - Error when creating external ID of type {} and value {}", tenant, type, externalId, e);
+            throw e;
+        }
+    }
+
     public ManagedObjectRepresentation createDevice(String tenant, String name, String deviceId, String type, String extIdType) {
         try {
             ManagedObjectRepresentation mor = new ManagedObjectRepresentation();
@@ -79,22 +98,14 @@ public class C8YClient {
             mor.set(new IsDevice());
             mor = inventoryApi.create(mor);
             log.info("{} - New device created: {}", tenant, mor);
-            ExternalIDRepresentation extId = new ExternalIDRepresentation();
-            extId.setType(Objects.requireNonNullElse(extIdType, "c8y_Serial"));
-            extId.setExternalId(deviceId);
-            extId.setManagedObject(mor);
-            extId = identityApi.create(extId);
-            ID id = new ID();
-            id.setType(extId.getType());
-            id.setValue(extId.getExternalId());
-            //Adding External ID to Cache
-            externalIdCache.put(id, extId);
             return mor;
         } catch (SDKException e) {
             log.error("{} - Error when creating device with ID {}", tenant, deviceId, e);
             throw e;
         }
     }
+
+
 
     public MeasurementRepresentation createSimpleMeasurement(String tenant, ManagedObjectRepresentation mor, String name, String type, DateTime time, BigDecimal value, String unit) throws SDKException {
         MeasurementRepresentation measurementRepresentation = new MeasurementRepresentation();
