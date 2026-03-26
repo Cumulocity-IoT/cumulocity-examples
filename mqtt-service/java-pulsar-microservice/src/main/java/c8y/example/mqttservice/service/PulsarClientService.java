@@ -87,18 +87,18 @@ public class PulsarClientService {
 
     private final RetryTemplate subscriptionRetryTemplate;
 
-    private final ExecutorService virtualThreadPool;
+    private final ExecutorService threadPool;
 
     public PulsarClientService(@Value("${C8Y_BASEURL_PULSAR:}") String pulsarUrl,
                                C8YClient c8YClient,
                                MicroserviceSubscriptionsService subscriptionsService,
                                RetryTemplate subscriptionRetryTemplate,
-                               @Named("virtualThreadPool") ExecutorService virtualThreadPool) {
+                               @Named("threadPool") ExecutorService threadPool) {
         this.pulsarUrl = pulsarUrl;
         this.c8YClient = c8YClient;
         this.subscriptionsService = subscriptionsService;
         this.subscriptionRetryTemplate = subscriptionRetryTemplate;
-        this.virtualThreadPool = virtualThreadPool;
+        this.threadPool = threadPool;
     }
 
     /* Will be executed each time a tenant is subscribed and on microservice start */
@@ -192,7 +192,7 @@ public class PulsarClientService {
                 .keepAliveInterval(DEFAULT_KEEP_ALIVE, TimeUnit.SECONDS)
                 .build();
         clientMap.put(tenant, client);
-        PulsarCallback callback = new PulsarCallback(tenant, virtualThreadPool, this);
+        PulsarCallback callback = new PulsarCallback(tenant, threadPool, this);
         callbackMap.put(tenant, callback);
     }
 

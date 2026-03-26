@@ -22,8 +22,8 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <!--<maven.compiler.source>21</maven.compiler.source>-->
+        <!--<maven.compiler.target>21</maven.compiler.target>-->
         <pulsar.version>4.0.6</pulsar.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>c8y.example.mqttservice.IntegrationMicroservice</main.class>
