@@ -8,7 +8,6 @@ import org.springframework.retry.support.RetryTemplate;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 
 @MicroserviceApplication
@@ -27,11 +26,19 @@ public class IntegrationMicroservice {
                 .fixedBackoff(5000)
                 .build();
     }
-
+    /** For Java 21+ use this **/
+    /**
     @Bean("virtualThreadPool")
     public ExecutorService virtualThreadPool() {
         final ThreadFactory factory = Thread.ofVirtual().name("virtThread-", 0).factory();
         return Executors.newThreadPerTaskExecutor(factory);
+    }
+     **/
+
+    /** For Java 17 or if you want to use a standard thread pool instead of virtual threads, use this **/
+    @Bean("threadPool")  // Renamed for clarity; keep as "virtualThreadPool" if preferred
+    public ExecutorService threadPool() {
+        return Executors.newCachedThreadPool();
     }
 
 }

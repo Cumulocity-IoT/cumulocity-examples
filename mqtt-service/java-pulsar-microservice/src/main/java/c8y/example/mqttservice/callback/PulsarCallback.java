@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutorService;
 public class PulsarCallback implements MessageListener<byte[]> {
 
     private final String tenant;
-    private final ExecutorService virtualThreadPool;
+    private final ExecutorService threadPool;
     private final PulsarClientService pulsarClientService;
 
     @Override
@@ -32,7 +32,7 @@ public class PulsarCallback implements MessageListener<byte[]> {
         log.info("{} - Received message {} from MQTT device {} on MQTT topic {} with payload: {}", tenant, msg.getMessageId(), client, topic, payload);
 
         // From here we should ideally process the message asynchronously and unblock the callback-thread because we could receive a lot of messages here
-        virtualThreadPool.submit(() -> {
+        threadPool.submit(() -> {
             pulsarClientService.processMessage(tenant, consumer, msg);
         });
     }
