@@ -18,7 +18,7 @@
 
     <modules>
         <module>java-simple-pulsar-client</module>
-<!--        <module>java-pulsar-microservice</module>-->
+        <module>java-pulsar-microservice</module>
     </modules>
 
     <build>
