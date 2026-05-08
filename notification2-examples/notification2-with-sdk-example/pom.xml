@@ -59,7 +59,7 @@
             <plugin>
                 <groupId>com.nsn.cumulocity.clients-java</groupId>
                 <artifactId>microservice-package-maven-plugin</artifactId>
-                <version>2025.25.0</version>
+                <version>${c8y.clients.version}</version>
                 <executions>
                     <execution>
                         <id>package</id>

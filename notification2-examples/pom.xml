@@ -65,6 +65,11 @@
             <version>${c8y.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.nsn.cumulocity.clients-java</groupId>
+            <artifactId>java-client-model</artifactId>
+            <version>${c8y.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>

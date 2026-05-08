@@ -52,6 +52,10 @@
             <type>tar.gz</type>
             <classifier>tar</classifier>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
