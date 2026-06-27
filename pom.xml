@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2026.42.0</revision>
+    <revision>2026.40.2001</revision>
     <changelist>-SNAPSHOT</changelist>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,8 +20,12 @@
     <nexus.url>http://localhost:8080</nexus.url>
     <nexus.basePath>/nexus/content/repositories</nexus.basePath>
 
+    <project.version>2026.40.2001-SNAPSHOT</project.version>
+    <project.parent.version>${project.version}</project.parent.version>
+    <c8y.microservice.version>${project.version}</c8y.microservice.version>
     <c8y.version>${project.version}</c8y.version>
-    <spring-boot.version>3.5.11</spring-boot.version>
+    <spring-boot.version>4.1.0</spring-boot.version>
+    <spring-framework.version>7.0.8</spring-framework.version>
     <bouncycastle.version>1.83</bouncycastle.version>
   </properties>
 
@@ -126,6 +130,8 @@
             <dependencyConvergence />
             <bannedDependencies>
               <excludes><exclude>commons-logging:commons-logging</exclude></excludes>
+              <!-- commons-logging 1.3.x is a zero-dependency SLF4J bridge required by Spring Framework 7 -->
+              <includes><include>commons-logging:commons-logging:1.3.6</include></includes>
               <message>Dependency to commons-logging:commons-logging was replaced by org.slf4j:jcl-over-slf4j</message>
             </bannedDependencies>
             <bannedDependencies>
