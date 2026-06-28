@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2026.40.2001</revision>
+    <revision>2026.42.0</revision>
     <changelist>-SNAPSHOT</changelist>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,9 +20,6 @@
     <nexus.url>http://localhost:8080</nexus.url>
     <nexus.basePath>/nexus/content/repositories</nexus.basePath>
 
-    <project.version>2026.40.2001-SNAPSHOT</project.version>
-    <project.parent.version>${project.version}</project.parent.version>
-    <c8y.microservice.version>${project.version}</c8y.microservice.version>
     <c8y.version>${project.version}</c8y.version>
     <spring-boot.version>4.1.0</spring-boot.version>
     <spring-framework.version>7.0.8</spring-framework.version>
