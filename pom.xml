@@ -11,12 +11,9 @@
   <packaging>pom</packaging>
 
   <properties>
-    <revision>2026.40.2001</revision>
+    <revision>2026.42.0</revision>
     <changelist>-SNAPSHOT</changelist>
 
-    <project.version>2026.40.2001-SNAPSHOT</project.version>
-    <project.parent.version>${project.version}</project.parent.version>
-    <c8y.microservice.version>${project.version}</c8y.microservice.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
     <microservice.java.version>${java.version}</microservice.java.version>
