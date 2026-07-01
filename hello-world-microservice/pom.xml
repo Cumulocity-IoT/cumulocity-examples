@@ -19,7 +19,7 @@
         <main.class>c8y.example.helloworld.HelloWorldMain</main.class>
 
         <c8y.version>${revision}${changelist}</c8y.version>
-        <spring-boot.version>3.5.11</spring-boot.version>
+        <spring-boot.version>4.1.0</spring-boot.version>
     </properties>
 
     <dependencyManagement>
