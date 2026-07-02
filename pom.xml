@@ -21,7 +21,7 @@
     <nexus.basePath>/nexus/content/repositories</nexus.basePath>
 
     <c8y.version>${project.version}</c8y.version>
-    <spring-boot.version>3.5.5</spring-boot.version>
+    <spring-boot.version>4.0.7</spring-boot.version>
     <bouncycastle.version>1.83</bouncycastle.version>
   </properties>
 

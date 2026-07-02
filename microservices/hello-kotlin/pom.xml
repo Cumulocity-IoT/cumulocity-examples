@@ -16,7 +16,8 @@
 
     <properties>
         <jetbrains-annotations.version>23.0.0</jetbrains-annotations.version>
-        <kotlin.version>1.9.25</kotlin.version>
+        <kotlin.version>2.3.21</kotlin.version> <!-- Spring Boot 4 requires Kotlin 2.2+; aligned with the version managed by the Spring Boot 4.1 BOM -->
+
         <springmockk.version>4.0.2</springmockk.version>
     </properties>
 
@@ -86,6 +87,12 @@
                     <artifactId>mockito-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Spring Boot 4.0 moved @WebMvcTest / MockMvc test support out of spring-boot-starter-test. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webmvc-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
