@@ -88,7 +88,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Spring Boot 4.0 moved @WebMvcTest / MockMvc test support out of spring-boot-starter-test. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-webmvc-test</artifactId>
