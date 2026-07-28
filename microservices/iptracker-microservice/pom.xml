@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <revision>2026.42.0</revision>
+    <revision>2026.43.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
