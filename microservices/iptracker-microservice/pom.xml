@@ -14,7 +14,7 @@
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <spring-boot.version>3.5.11</spring-boot.version>
+    <spring-boot.version>4.0.7</spring-boot.version>
     <c8y.version>${revision}${changelist}</c8y.version>
     <microservice.name>iptracker-microservice</microservice.name>
   </properties>
