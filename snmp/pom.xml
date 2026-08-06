@@ -44,7 +44,6 @@
 		<argLine>-Duser.language=en</argLine>
 
 		<chronicle.version>2.22.132</chronicle.version>
-		<cometd.version>3.0.10</cometd.version>
 		<cucumber.version>4.2.0</cucumber.version>
 		<mibble-grammatica.version>1.6</mibble-grammatica.version>
 		<mibble.version>2.10.1</mibble.version>
@@ -93,32 +92,6 @@
 				<groupId>com.nsn.cumulocity.model</groupId>
 				<artifactId>device-capability-model</artifactId>
 				<version>${c8y.version}</version>
-			</dependency>
-
-			<!-- Cometd -->
-			<dependency>
-				<groupId>org.cometd.java</groupId>
-				<artifactId>cometd-java-client</artifactId>
-				<version>${cometd.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>jetty-client</artifactId>
-						<groupId>org.eclipse.jetty</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>jetty-io</artifactId>
-						<groupId>org.eclipse.jetty</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>jetty-http</artifactId>
-						<groupId>org.eclipse.jetty</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.cometd.java</groupId>
-				<artifactId>cometd-java-common</artifactId>
-				<version>${cometd.version}</version>
 			</dependency>
 
 			<!-- Chronicle -->
