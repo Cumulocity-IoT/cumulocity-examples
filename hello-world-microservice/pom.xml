@@ -31,6 +31,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>c8y.agents.lpwan.backend</groupId>
+                <artifactId>lpwan-backend</artifactId>
+                <version>${c8y.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -41,9 +46,25 @@
         </dependency>
 
         <dependency>
+            <groupId>com.nsn.cumulocity.clients-java</groupId>
+            <artifactId>java-client-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>c8y.opentelemetry.exporters</groupId>
+            <artifactId>opentelemetry-metrics-exporters</artifactId>
+            <version>${c8y.version}</version>
         </dependency>
     </dependencies>
 
