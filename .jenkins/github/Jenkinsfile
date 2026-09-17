@@ -1,4 +1,11 @@
+@Library('c8y-common-steps') _
+
 env.REPOSITORY_BASE_URL="github.com/Cumulocity-IoT"
+
+// The Java SDK is built from source and consumed by the examples build below.
+SDK_REPO = 'cumulocity-clients-java-internal'
+// Set by the 'Build SDK' stage, appended to the examples build command line.
+SDK_MVN_ARGS = ''
 
 pipeline {
      agent {
@@ -58,6 +65,64 @@ pipeline {
                 }
             }
         }
+        // When the Java SDK has a branch named like the one under build, that SDK is built from
+        // source and the examples are compiled against it. Otherwise the examples build keeps
+        // resolving the c8y.version configured in the POMs.
+        stage('Build SDK') {
+            steps {
+                withCredentials([file(credentialsId: 'maven-settings', variable: 'MVN_SETTINGS')]) {
+                    script {
+                        if (!env.CHANGE_BRANCH) {
+                            echo "Not a pull request build, no matching ${SDK_REPO} branch to look for"
+                            return
+                        }
+
+                        def resolvedScm = resolveScm(
+                            source: [
+                                $class: 'GitSCMSource',
+                                remote: "https://github.com/Cumulocity-IoT/${SDK_REPO}.git",
+                                traits: [gitBranchDiscovery(), gitTagDiscovery()],
+                                credentialsId: scm.userRemoteConfigs[0].credentialsId
+                            ],
+                            targets: [env.CHANGE_BRANCH, env.CHANGE_TARGET, 'develop']
+                        )
+                        if (!"${resolvedScm.branches[0]}".equals("${env.CHANGE_BRANCH}")) {
+                            echo "No matching ${SDK_REPO} branch"
+                            return
+                        }
+
+                        echo "Found matching ${SDK_REPO} branch ${env.CHANGE_BRANCH}"
+                        checkoutMatchingBranch(SDK_REPO, env.CHANGE_BRANCH, env.CHANGE_TARGET)
+
+                        dir(SDK_REPO) {
+                            def revision = sh(returnStdout: true,
+                                script: '.jenkins/scripts/mvn.sh -f . -N -q' +
+                                        ' -Dexec.executable=\'echo\' -Dexec.args=\'${revision}\' exec:exec' +
+                                        ' -Dmaven.repo.local=$HOME/.m2/repository'
+                            ).trim()
+
+                            def changelist = ".${env.CHANGE_ID}.${env.BUILD_NUMBER}.sdk"
+                            def sdkVersion = "${revision}${changelist}"
+                            echo "Building SDK ${sdkVersion} from branch ${env.CHANGE_BRANCH} for the examples build"
+
+                            // mvn.sh translates VERSION/CHANGE_VERSION into -Drevision/-Dchangelist and
+                            // builds the root, microservice and lpwan-backend reactors. The trailing
+                            // maven.repo.local wins over the workspace local repository mvn.sh defaults to,
+                            // so that the examples build below resolves what is installed here.
+                            withEnv(["VERSION=${revision}", "CHANGE_VERSION=${changelist}", 'CI=true']) {
+                                sh '.jenkins/scripts/mvn.sh -DskipTests install -Dmaven.repo.local=$HOME/.m2/repository'
+                            }
+                            SDK_MVN_ARGS = "-Dc8y.version=${sdkVersion}"
+
+                            // The installed artifacts are all the examples build needs. Dropping the
+                            // sources keeps the SDK out of the JUnit and JaCoCo patterns of the Build
+                            // stage, which scan the whole workspace.
+                            deleteDir()
+                        }
+                    }
+                }
+            }
+        }
         // Separate Compile and Build does not make sense currently as build cannot be run in isolated network.
         // It cannot be run in isolated network due to jarhell in tests (agent-framework 8.18) that are not resolved at compile time.
         //stage('Compile') {
@@ -70,7 +135,7 @@ pipeline {
         stage('Build') {
             steps {
                 withCredentials([file(credentialsId: 'maven-settings', variable: 'MVN_SETTINGS')]) {
-                    sh ".jenkins/scripts/build.sh"
+                    sh ".jenkins/scripts/build.sh ${SDK_MVN_ARGS}"
                 }
             }
             post {
