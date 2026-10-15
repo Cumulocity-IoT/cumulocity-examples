@@ -21,9 +21,9 @@ package lora.codec.lansitec;
 import com.cumulocity.microservice.lpwan.codec.Codec;
 import com.cumulocity.microservice.lpwan.codec.model.DeviceCommand;
 import com.cumulocity.microservice.lpwan.codec.model.DeviceInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import lora.codec.lansitec.encoder.LansitecEncoder;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +58,7 @@ public class LansitecCodec implements Codec {
         String json =null;
         try {
             json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(deviceOperationElements);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
         }
         DeviceCommand setConfigCommand = new DeviceCommand(LansitecEncoder.SET_CONFIG, "Device Config", json);

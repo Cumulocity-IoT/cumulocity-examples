@@ -51,7 +51,7 @@
             <artifactId>microservice-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
+            <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
         <dependency>

@@ -20,7 +20,6 @@ package com.cumulocity.agent.snmp.platform.model;
 
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,8 +47,7 @@ public class DeviceManagedObjectWrapper extends AbstractManagedObjectWrapper {
 	private void loadProperties() {
 		Object fragmentObj = managedObject.get(C8Y_SNMP_DEVICE);
 		if (fragmentObj != null) {
-			ObjectMapper mapper = new ObjectMapper();
-			properties = mapper.convertValue(fragmentObj, SnmpDeviceProperties.class);
+			properties = MAPPER.convertValue(fragmentObj, SnmpDeviceProperties.class);
 		} else {
 			log.warn("Did not find correct {} fragment in the received gateway managed object {}",
 					C8Y_SNMP_DEVICE, managedObject.getName());

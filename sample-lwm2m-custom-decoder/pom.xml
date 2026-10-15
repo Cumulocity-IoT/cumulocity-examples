@@ -43,7 +43,7 @@
             <artifactId>microservice-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <groupId>tools.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
         </dependency>
         <dependency>

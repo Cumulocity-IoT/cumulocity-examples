@@ -21,11 +21,19 @@ package com.cumulocity.agent.snmp.platform.model;
 import com.cumulocity.model.idtype.GId;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
 import lombok.Getter;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
 @Getter
 public abstract class AbstractManagedObjectWrapper {
+
+	// Jackson 3 fails on null for primitive fields by default; keep the Jackson 2 behaviour of mapping null to the default value.
+	protected static final ObjectMapper MAPPER = JsonMapper.builder()
+			.disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+			.build();
 
 	protected ManagedObjectRepresentation managedObject;
 

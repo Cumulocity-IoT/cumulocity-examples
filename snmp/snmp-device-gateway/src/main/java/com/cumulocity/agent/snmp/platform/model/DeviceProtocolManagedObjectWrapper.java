@@ -19,7 +19,6 @@
 package com.cumulocity.agent.snmp.platform.model;
 
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.snmp4j.smi.OID;
@@ -49,9 +48,8 @@ public class DeviceProtocolManagedObjectWrapper extends AbstractManagedObjectWra
 	private void loadRegisters() {
 		Object registersObj = managedObject.get(C8Y_REGISTERS);
 		if (registersObj instanceof List) {
-			ObjectMapper mapper = new ObjectMapper();
-			List<Register> registers = mapper.convertValue(registersObj,
-					mapper.getTypeFactory().constructCollectionType(ArrayList.class, Register.class));
+			List<Register> registers = MAPPER.convertValue(registersObj,
+					MAPPER.getTypeFactory().constructCollectionType(ArrayList.class, Register.class));
 			for (Register register : registers) {
 				try {
 					OID oid = new OID(register.getOid());
