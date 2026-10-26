@@ -65,13 +65,13 @@ public class LansitecEncoder implements EncoderService {
                 } else if (lpwanEncoderInputData.getCommandName().equals(SET_CONFIG)) {
                     JsonNode params = mapper.readTree(lpwanEncoderInputData.getCommandData());
                     ByteBuffer buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN);
-                    byte breakpoint = params.get("breakpoint").asBoolean() ? (byte) 8 : 0;
-                    byte selfadapt = params.get("selfadapt").asBoolean() ? (byte) 4 : 0;
-                    byte oneoff = params.get("oneoff").asBoolean() ? (byte) 2 : 0;
-                    byte alreport = params.get("alreport").asBoolean() ? (byte) 1 : 0;
+                    byte breakpoint = params.path("breakpoint").asBoolean(false) ? (byte) 8 : 0;
+                    byte selfadapt = params.path("selfadapt").asBoolean(false) ? (byte) 4 : 0;
+                    byte oneoff = params.path("oneoff").asBoolean(false) ? (byte) 2 : 0;
+                    byte alreport = params.path("alreport").asBoolean(false) ? (byte) 1 : 0;
                     buffer.put((byte) ((byte) 0x90 | (byte) breakpoint | (byte) selfadapt | (byte) oneoff | (byte) alreport));
-                    buffer.putShort((short) params.get("pos").asInt());
-                    buffer.put((byte) params.get("hb").asInt());
+                    buffer.putShort((short) params.path("pos").asInt(0));
+                    buffer.put((byte) params.path("hb").asInt(0));
                     payload = BaseEncoding.base16().encode(buffer.array());
                 }
 
